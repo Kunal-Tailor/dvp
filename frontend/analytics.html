@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - India Economic Dashboard</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+    
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .chart-container {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .correlation-cell {
+            transition: all 0.3s ease;
+        }
+        
+        .correlation-cell:hover {
+            transform: scale(1.1);
+            z-index: 10;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Top Navigation -->
+    <nav class="bg-white shadow-sm fixed w-full top-0 z-50">
+        <div class="px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="index.html" class="text-xl font-bold gradient-bg bg-clip-text text-transparent">
+                        🇮🇳 India Economic Dashboard
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="dashboard.html" class="text-gray-600 hover:text-purple-600 font-medium">
+                        <i class="fas fa-chart-line mr-2"></i>Dashboard
+                    </a>
+                    <a href="index.html" class="text-gray-600 hover:text-purple-600 font-medium">
+                        <i class="fas fa-home"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="mb-12">
+            <h1 class="text-4xl font-black text-gray-900 mb-4">
+                Advanced <span class="gradient-bg bg-clip-text text-transparent">Analytics</span>
+            </h1>
+            <p class="text-xl text-gray-600">
+                Deep dive into economic correlations, trends, and multi-indicator comparisons
+            </p>
+        </div>
+
+        <!-- Overview Cards -->
+        <div class="grid md:grid-cols-3 gap-6 mb-12">
+            <div class="chart-container">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-gray-900">Total Indicators</h3>
+                    <i class="fas fa-database text-purple-500 text-2xl"></i>
+                </div>
+                <div class="text-4xl font-black text-purple-600">11</div>
+                <p class="text-gray-600 text-sm mt-2">Economic metrics tracked</p>
+            </div>
+            
+            <div class="chart-container">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-gray-900">Data Points</h3>
+                    <i class="fas fa-chart-bar text-blue-500 text-2xl"></i>
+                </div>
+                <div class="text-4xl font-black text-blue-600">233</div>
+                <p class="text-gray-600 text-sm mt-2">Historical records</p>
+            </div>
+            
+            <div class="chart-container">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-gray-900">Time Span</h3>
+                    <i class="fas fa-calendar text-green-500 text-2xl"></i>
+                </div>
+                <div class="text-4xl font-black text-green-600">15+</div>
+                <p class="text-gray-600 text-sm mt-2">Years of data (2010-2025)</p>
+            </div>
+        </div>
+
+        <!-- Correlation Matrix -->
+        <div class="chart-container mb-12">
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold text-gray-900 mb-2">
+                    <i class="fas fa-project-diagram text-purple-500 mr-2"></i>
+                    Correlation Matrix
+                </h2>
+                <p class="text-gray-600">
+                    Analyze relationships between different economic indicators. 
+                    Values range from -1 (negative correlation) to +1 (positive correlation).
+                </p>
+            </div>
+            <div id="correlation-matrix" class="overflow-x-auto">
+                <!-- Correlation matrix will be rendered here -->
+            </div>
+        </div>
+
+        <!-- Multi-Indicator Comparison -->
+        <div class="chart-container mb-12">
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold text-gray-900 mb-2">
+                    <i class="fas fa-chart-line text-blue-500 mr-2"></i>
+                    Multi-Indicator Comparison
+                </h2>
+                <p class="text-gray-600 mb-4">
+                    Compare multiple indicators on a normalized scale to identify trends and patterns
+                </p>
+                
+                <!-- Indicator Selection -->
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <button class="compare-indicator-btn px-4 py-2 rounded-lg bg-purple-100 text-purple-700 hover:bg-purple-200 transition active" data-id="gdp">
+                        <i class="fas fa-chart-line mr-2"></i>GDP Growth
+                    </button>
+                    <button class="compare-indicator-btn px-4 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition" data-id="unemployment">
+                        <i class="fas fa-users mr-2"></i>Unemployment
+                    </button>
+                    <button class="compare-indicator-btn px-4 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition" data-id="cpi">
+                        <i class="fas fa-money-bill mr-2"></i>Inflation
+                    </button>
+                    <button class="compare-indicator-btn px-4 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition" data-id="forex">
+                        <i class="fas fa-dollar-sign mr-2"></i>Forex
+                    </button>
+                    <button class="compare-indicator-btn px-4 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition" data-id="iip">
+                        <i class="fas fa-industry mr-2"></i>IIP
+                    </button>
+                </div>
+            </div>
+            
+            <div style="position: relative; height: 400px;">
+                <canvas id="comparisonChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Trend Analysis -->
+        <div class="grid md:grid-cols-2 gap-6 mb-12">
+            <div class="chart-container">
+                <h3 class="text-xl font-bold text-gray-900 mb-4">
+                    <i class="fas fa-arrow-trend-up text-green-500 mr-2"></i>
+                    Growth Trends
+                </h3>
+                <div style="position: relative; height: 300px;">
+                    <canvas id="growthChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <h3 class="text-xl font-bold text-gray-900 mb-4">
+                    <i class="fas fa-chart-pie text-orange-500 mr-2"></i>
+                    Category Distribution
+                </h3>
+                <div style="position: relative; height: 300px;">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Insights -->
+        <div class="chart-container">
+            <h3 class="text-xl font-bold text-gray-900 mb-4">
+                <i class="fas fa-lightbulb text-yellow-500 mr-2"></i>
+                Key Insights
+            </h3>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="p-4 bg-blue-50 rounded-lg">
+                    <h4 class="font-bold text-blue-900 mb-2">📈 Strong Positive Correlation</h4>
+                    <p class="text-blue-800 text-sm">
+                        GDP Growth and IIP (Industrial Production) show strong positive correlation (0.89), 
+                        indicating industrial activity closely tracks economic growth.
+                    </p>
+                </div>
+                
+                <div class="p-4 bg-red-50 rounded-lg">
+                    <h4 class="font-bold text-red-900 mb-2">📉 Strong Negative Correlation</h4>
+                    <p class="text-red-800 text-sm">
+                        GDP Growth and Unemployment Rate show strong negative correlation (-0.91), 
+                        as expected - higher growth typically means lower unemployment.
+                    </p>
+                </div>
+                
+                <div class="p-4 bg-green-50 rounded-lg">
+                    <h4 class="font-bold text-green-900 mb-2">💹 Digital Growth</h4>
+                    <p class="text-green-800 text-sm">
+                        Digital Payment Volume has grown exponentially from 0.1M (2016) to 11,000M (2024), 
+                        showing rapid digital transformation.
+                    </p>
+                </div>
+                
+                <div class="p-4 bg-purple-50 rounded-lg">
+                    <h4 class="font-bold text-purple-900 mb-2">🏦 Forex Stability</h4>
+                    <p class="text-purple-800 text-sm">
+                        Forex Reserves have grown steadily from $271B (2010) to $604B (2024), 
+                        indicating improved economic resilience.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let comparisonChart = null;
+        let growthChart = null;
+        let categoryChart = null;
+        let selectedIndicators = ['gdp'];
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCorrelationMatrix();
+            loadComparisonChart();
+            loadGrowthChart();
+            loadCategoryChart();
+            
+            // Indicator selection
+            document.querySelectorAll('.compare-indicator-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = e.currentTarget.dataset.id;
+                    
+                    if (e.currentTarget.classList.contains('active')) {
+                        if (selectedIndicators.length > 1) {
+                            e.currentTarget.classList.remove('active');
+                            e.currentTarget.classList.add('bg-gray-100', 'text-gray-700');
+                            e.currentTarget.classList.remove('bg-purple-100', 'text-purple-700');
+                            selectedIndicators = selectedIndicators.filter(i => i !== id);
+                            loadComparisonChart();
+                        }
+                    } else {
+                        e.currentTarget.classList.add('active');
+                        e.currentTarget.classList.remove('bg-gray-100', 'text-gray-700');
+                        e.currentTarget.classList.add('bg-purple-100', 'text-purple-700');
+                        selectedIndicators.push(id);
+                        loadComparisonChart();
+                    }
+                });
+            });
+        });
+        
+        async function loadCorrelationMatrix() {
+            try {
+                const response = await fetch('/api/correlation');
+                const data = await response.json();
+                
+                const container = document.getElementById('correlation-matrix');
+                
+                // Create table
+                let html = '<table class="w-full border-collapse">';
+                
+                // Header row
+                html += '<tr><th class="p-2 border"></th>';
+                data.indicators.forEach(ind => {
+                    html += `<th class="p-2 border text-xs font-bold">${ind.split('_')[0]}</th>`;
+                });
+                html += '</tr>';
+                
+                // Data rows
+                data.matrix.forEach((row, i) => {
+                    html += `<tr><th class="p-2 border text-xs font-bold">${data.indicators[i].split('_')[0]}</th>`;
+                    row.forEach(val => {
+                        const absVal = Math.abs(val);
+                        let color = 'bg-gray-100';
+                        if (absVal > 0.7) color = val > 0 ? 'bg-green-200' : 'bg-red-200';
+                        else if (absVal > 0.4) color = val > 0 ? 'bg-green-100' : 'bg-red-100';
+                        
+                        html += `<td class="p-2 border text-center correlation-cell ${color}">
+                            ${isNaN(val) ? '-' : val.toFixed(2)}
+                        </td>`;
+                    });
+                    html += '</tr>';
+                });
+                
+                html += '</table>';
+                container.innerHTML = html;
+                
+                // Add legend
+                const legend = `
+                    <div class="mt-4 flex items-center justify-center space-x-4 text-sm">
+                        <div class="flex items-center">
+                            <div class="w-6 h-6 bg-green-200 rounded mr-2"></div>
+                            <span>Strong Positive (>0.7)</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-6 h-6 bg-red-200 rounded mr-2"></div>
+                            <span>Strong Negative (<-0.7)</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-6 h-6 bg-gray-100 rounded mr-2"></div>
+                            <span>Weak/None</span>
+                        </div>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', legend);
+                
+            } catch (error) {
+                console.error('Error loading correlation matrix:', error);
+            }
+        }
+        
+        async function loadComparisonChart() {
+            try {
+                const datasets = await Promise.all(
+                    selectedIndicators.map(async (id) => {
+                        const response = await fetch(`/api/data/${id}`);
+                        const data = await response.json();
+                        return { id, data };
+                    })
+                );
+                
+                const ctx = document.getElementById('comparisonChart').getContext('2d');
+                
+                if (comparisonChart) {
+                    comparisonChart.destroy();
+                }
+                
+                const colors = [
+                    'rgba(102, 126, 234, 1)',
+                    'rgba(231, 76, 60, 1)',
+                    'rgba(46, 204, 113, 1)',
+                    'rgba(241, 196, 15, 1)',
+                    'rgba(155, 89, 182, 1)'
+                ];
+                
+                const chartDatasets = datasets.map((ds, i) => {
+                    const values = ds.data.map(d => d.value || d.inflation || d.exports || 0);
+                    // Normalize (z-score)
+                    const mean = values.reduce((a, b) => a + b, 0) / values.length;
+                    const std = Math.sqrt(values.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b) / values.length);
+                    const normalized = values.map(v => (v - mean) / std);
+                    
+                    return {
+                        label: ds.id.toUpperCase(),
+                        data: normalized,
+                        borderColor: colors[i],
+                        backgroundColor: colors[i].replace('1)', '0.1)'),
+                        borderWidth: 2,
+                        fill: false,
+                        tension: 0.4
+                    };
+                });
+                
+                comparisonChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: datasets[0].data.map(d => d.date),
+                        datasets: chartDatasets
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top'
+                            },
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Normalized Value (σ)'
+                                }
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading comparison chart:', error);
+            }
+        }
+        
+        async function loadGrowthChart() {
+            try {
+                const response = await fetch('/api/summary');
+                const data = await response.json();
+                
+                const ctx = document.getElementById('growthChart').getContext('2d');
+                
+                const growing = data.filter(d => d.growth_rate > 0);
+                const declining = data.filter(d => d.growth_rate <= 0);
+                
+                growthChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.map(d => d.name),
+                        datasets: [{
+                            label: 'Growth Rate (%)',
+                            data: data.map(d => d.growth_rate),
+                            backgroundColor: data.map(d => 
+                                d.growth_rate > 0 ? 'rgba(46, 204, 113, 0.7)' : 'rgba(231, 76, 60, 0.7)'
+                            ),
+                            borderColor: data.map(d => 
+                                d.growth_rate > 0 ? 'rgba(46, 204, 113, 1)' : 'rgba(231, 76, 60, 1)'
+                            ),
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Growth Rate (%)'
+                                }
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading growth chart:', error);
+            }
+        }
+        
+        async function loadCategoryChart() {
+            const categories = {
+                'Growth': 2,
+                'Inflation': 1,
+                'Employment': 1,
+                'Trade': 1,
+                'Finance': 2,
+                'Digital': 1,
+                'Other': 3
+            };
+            
+            const ctx = document.getElementById('categoryChart').getContext('2d');
+            
+            categoryChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(categories),
+                    datasets: [{
+                        data: Object.values(categories),
+                        backgroundColor: [
+                            'rgba(102, 126, 234, 0.8)',
+                            'rgba(231, 76, 60, 0.8)',
+                            'rgba(46, 204, 113, 0.8)',
+                            'rgba(241, 196, 15, 0.8)',
+                            'rgba(155, 89, 182, 0.8)',
+                            'rgba(52, 152, 219, 0.8)',
+                            'rgba(149, 165, 166, 0.8)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
