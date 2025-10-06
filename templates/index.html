@@ -40,10 +40,10 @@
                 <div class="indicator-section">
                     <div class="section-title">📊 Economic Indicator</div>
                     <select class="indicator-selector" id="indicatorSelect">
-                        {% comment %} <option value="gdp">GDP Growth Rate</option> {% endcomment %}
+                        <option value="gdp">GDP Growth Rate</option>
                         <option value="cpi">Consumer Price Index</option>
-                        {% comment %} <option value="gst">GST Collections</option> {% endcomment %}
-                        {% comment %} <option value="unemployment">Unemployment Rate</option> {% endcomment %}
+                        <option value="gst">GST Collections</option>
+                        <option value="unemployment">Unemployment Rate</option>
                         <option value="forex">Foreign Exchange Reserves</option>
                         <option value="iip">Index of Industrial Production</option>
                         <option value="repo">Repo Rate</option>
@@ -76,6 +76,12 @@
                         <button class="time-btn" data-range="2Y">2Y</button>
                         <button class="time-btn" data-range="5Y">5Y</button>
                     </div>
+                </div>
+
+                <!-- Dynamic Filters -->
+                <div class="filters-section">
+                    <div class="section-title">🔎 Filters</div>
+                    <div id="dynamicFilters"></div>
                 </div>
 
                 <!-- Chart Type -->
@@ -159,9 +165,13 @@
                     <div class="chart-footer">
                         <div class="source-info">
                             <span>📊</span>
-                            <span>Source: Reserve Bank of India</span>
+                            <span class="source-text">Source</span>
                         </div>
                         <div class="update-info">Last updated: 2024-12-30</div>
+                    </div>
+                    <div style="display:flex; gap: 0.5rem; margin-top: 0.75rem;">
+                        <a id="downloadCsvLink" class="cta-button" style="padding: 0.5rem 1rem;" href="#">Download CSV</a>
+                        <button id="downloadPngBtn" class="cta-button" style="padding: 0.5rem 1rem; border: none;">Download PNG</button>
                     </div>
                 </div>
             </div>
