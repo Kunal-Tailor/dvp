@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IndianPulse - Economic Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="/static/style.css">
+
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo-section">
+            <div class="logo"></div>
+            <div>
+                <div class="brand-name">IndianPulse</div>
+                <div class="brand-subtitle">Economic Dashboard</div>
+            </div>
+        </div>
+        
+        <nav class="header-nav">
+            <a href="index.html" class="nav-link active">Dashboard</a>
+            <a href="about.html" class="nav-link">About</a>
+            <a href="features.html" class="nav-link">Features</a>
+        </nav>
+        
+        <div class="header-right">
+            <div class="indicators-count">11 Key Indicators</div>
+            <button class="theme-toggle" onclick="toggleTheme()">Dark</button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <!-- Economic Indicator -->
+                <div class="indicator-section">
+                    <div class="section-title">📊 Economic Indicator</div>
+                    <select class="indicator-selector" id="indicatorSelect">
+                        {% comment %} <option value="gdp">GDP Growth Rate</option> {% endcomment %}
+                        <option value="cpi">Consumer Price Index</option>
+                        {% comment %} <option value="gst">GST Collections</option> {% endcomment %}
+                        {% comment %} <option value="unemployment">Unemployment Rate</option> {% endcomment %}
+                        <option value="forex">Foreign Exchange Reserves</option>
+                        <option value="iip">Index of Industrial Production</option>
+                        <option value="repo">Repo Rate</option>
+                        <option value="trade">Trade Balance</option>
+                        <option value="inclusion">Financial Inclusion Index</option>
+                        <option value="digital">Digital Payment Volume</option>
+                        <option value="cli">Composite Leading Indicator</option>
+                    </select>
+                </div>
+
+                <!-- Category Section -->
+                <div class="category-section">
+                    <div class="section-title">🏷️ Category Filter</div>
+                    <div class="category-pills">
+                        <button class="pill active">All</button>
+                        <button class="pill">Growth</button>
+                        <button class="pill">Prices</button>
+                        <button class="pill">Labor</button>
+                        <button class="pill">Policy</button>
+                        <button class="pill">External</button>
+                    </div>
+                </div>
+
+                <!-- Time Range -->
+                <div class="time-range-section">
+                    <div class="section-title">⏱️ Time Range</div>
+                    <div class="time-range-grid">
+                        <button class="time-btn" data-range="3M">3M</button>
+                        <button class="time-btn active" data-range="1Y">1Y</button>
+                        <button class="time-btn" data-range="2Y">2Y</button>
+                        <button class="time-btn" data-range="5Y">5Y</button>
+                    </div>
+                </div>
+
+                <!-- Chart Type -->
+                <div class="chart-type-section">
+                    <div class="section-title">📊 Chart Type</div>
+                    <select class="chart-type-selector" id="chartTypeSelect">
+                        <option value="line">📈 Line Chart</option>
+                        <option value="bar">📊 Bar Chart</option>
+                        <option value="area">📊 Area Chart</option>
+                        <option value="scatter">⚡ Scatter Chart</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="sidebar-footer">
+                <button class="update-btn" onclick="updateChart()">
+                    <span class="btn-icon">🔄</span>
+                    Update Chart
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-header">
+                <div class="header-left">
+                    <h1 class="indicator-title">GDP Growth Rate</h1>
+                    <div class="date-range">Oct 01, 2023 - Oct 01, 2024</div>
+                </div>
+                <div class="header-right">
+                    <a href="#" class="source-link">quarterly &nbsp;&nbsp; Reserve Bank of India</a>
+                </div>
+            </div>
+
+            <div class="content-body">
+                <!-- Stats Cards -->
+                <div class="stats-section">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-label">
+                                <span class="stat-icon">📈</span>
+                                <span>Latest</span>
+                            </div>
+                            <div class="stat-value">6.80%</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">
+                                <span class="stat-icon">⬆️</span>
+                                <span>Highest</span>
+                            </div>
+                            <div class="stat-value">7.80%</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">
+                                <span class="stat-icon">⬇️</span>
+                                <span>Lowest</span>
+                            </div>
+                            <div class="stat-value">6.10%</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">
+                                <span>Average</span>
+                            </div>
+                            <div class="stat-value">6.92%</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">
+                                <span class="stat-icon">📊</span>
+                                <span>Change</span>
+                            </div>
+                            <div class="stat-value change-indicator">+11.48%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chart Section -->
+                <div class="chart-section">
+                    <div class="chart-container">
+                        <canvas id="mainChart"></canvas>
+                    </div>
+                    <div class="chart-footer">
+                        <div class="source-info">
+                            <span>📊</span>
+                            <span>Source: Reserve Bank of India</span>
+                        </div>
+                        <div class="update-info">Last updated: 2024-12-30</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <div class="logo"></div>
+                        <div>
+                            <div class="brand-name">IndianPulse</div>
+                            <div class="brand-subtitle">Economic Dashboard</div>
+                        </div>
+                    </div>
+                    <p class="footer-description">
+                        Your comprehensive gateway to India's economic landscape. 
+                        Track key indicators, analyze trends, and make informed decisions.
+                    </p>
+                </div>
+            </div>
+
+            <div class="footer-section">
+                <h3 class="footer-title">Quick Links</h3>
+                <ul class="footer-links">
+                    <li><a href="index.html">Dashboard</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="features.html">Features</a></li>
+                    <li><a href="#indicators">Economic Indicators</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3 class="footer-title">Data Sources</h3>
+                <ul class="footer-links">
+                    <li><a href="https://rbi.org.in" target="_blank">Reserve Bank of India</a></li>
+                    <li><a href="https://mospi.gov.in" target="_blank">Ministry of Statistics</a></li>
+                    <li><a href="https://finmin.nic.in" target="_blank">Ministry of Finance</a></li>
+                    <li><a href="https://cso.gov.in" target="_blank">Central Statistics Office</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3 class="footer-title">Key Indicators</h3>
+                <ul class="footer-links">
+                    <li><a href="#gdp">GDP Growth Rate</a></li>
+                    <li><a href="#cpi">Consumer Price Index</a></li>
+                    <li><a href="#gst">GST Collections</a></li>
+                    <li><a href="#unemployment">Unemployment Rate</a></li>
+                    <li><a href="#forex">Foreign Exchange Reserves</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3 class="footer-title">Connect</h3>
+                <div class="social-links">
+                    <a href="#" class="social-link" title="Twitter">
+                        <span class="social-icon">🐦</span>
+                    </a>
+                    <a href="#" class="social-link" title="LinkedIn">
+                        <span class="social-icon">💼</span>
+                    </a>
+                    <a href="#" class="social-link" title="GitHub">
+                        <span class="social-icon">🐙</span>
+                    </a>
+                    <a href="#" class="social-link" title="Email">
+                        <span class="social-icon">📧</span>
+                    </a>
+                </div>
+                <div class="footer-contact">
+                    <p>📧 contact@indianpulse.in</p>
+                    <p>📞 +91 98765 43210</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="footer-bottom-content">
+                <div class="footer-copyright">
+                    <p>&copy; 2024 IndianPulse. All rights reserved.</p>
+                </div>
+                <div class="footer-legal">
+                    <a href="#privacy">Privacy Policy</a>
+                    <a href="#terms">Terms of Service</a>
+                    <a href="#disclaimer">Disclaimer</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Chart.js -->
+    <script src="/static/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>
