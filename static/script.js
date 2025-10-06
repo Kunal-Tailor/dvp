@@ -13,7 +13,12 @@ const indicatorMap = {
     gst: { name: 'GST Collections', unit: '₹ Lakh Cr', source: 'CBIC' },
     unemployment: { name: 'Unemployment Rate', unit: '%', source: 'CMIE' },
     forex: { name: 'Foreign Exchange Reserves', unit: 'Billion USD', source: 'RBI' },
-    iip: { name: 'Index of Industrial Production', unit: '%', source: 'MOSPI' }
+    iip: { name: 'Index of Industrial Production', unit: '%', source: 'MOSPI' },
+    repo: { name: 'Repo Rate', unit: '%', source: 'RBI' },
+    trade: { name: 'Trade Balance', unit: 'USD Bn', source: 'DGCI&S' },
+    inclusion: { name: 'Financial Inclusion Index', unit: 'Index', source: 'RBI' },
+    digital: { name: 'Digital Payment Volume', unit: 'Mn', source: 'NPCI' },
+    cli: { name: 'Composite Leading Indicator', unit: 'Index', source: 'OECD' }
 };
 
 // Initialize the application
@@ -22,12 +27,22 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeChart();
     setupEventListeners();
     loadIndicatorData(currentIndicator, currentTimeRange);
+    buildDynamicFilters();
 });
 
 // API Functions
 async function fetchIndicatorData(indicator, timeRange = '1Y') {
     try {
-        const response = await fetch(`${API_BASE_URL}/data/${indicator}?range=${timeRange}`);
+        const params = new URLSearchParams({ range: timeRange });
+        const regionEl = document.getElementById('filterRegion');
+        const stateEl = document.getElementById('filterState');
+        const modeEl = document.getElementById('filterPaymentMode');
+        const metricEl = document.getElementById('filterMetric');
+        if (regionEl && regionEl.value && regionEl.value !== 'All') params.set('region', regionEl.value);
+        if (stateEl && stateEl.value && stateEl.value !== 'All') params.set('state', stateEl.value);
+        if (modeEl && modeEl.value && modeEl.value !== 'All') params.set('payment_mode', modeEl.value);
+        if (metricEl && metricEl.value) params.set('metric', metricEl.value);
+        const response = await fetch(`${API_BASE_URL}/data/${indicator}?${params.toString()}`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -45,7 +60,7 @@ async function loadIndicatorData(indicator, timeRange) {
     if (data) {
         updateChart(data);
         updateStats(data.stats, indicator);
-        updateHeader(data.indicator, timeRange);
+        updateHeader(data.indicator, timeRange, data.frequency);
     } else {
         // Fallback to sample data if API fails
         console.warn('Using fallback data due to API error');
@@ -165,7 +180,7 @@ function updateChart(data) {
     if (!mainChart || !data) return;
     
     const indicator = indicatorMap[currentIndicator];
-    const unit = indicator ? indicator.unit : '%';
+    const unit = data.unit || (indicator ? indicator.unit : '%');
     
     mainChart.data.labels = data.labels || [];
     mainChart.data.datasets[0].data = data.data || [];
@@ -177,7 +192,8 @@ function updateChart(data) {
         const min = Math.min(...values);
         const max = Math.max(...values);
         const padding = (max - min) * 0.1;
-        mainChart.options.scales.y.min = Math.max(0, min - padding);
+        // Allow negatives for series like IIP and Trade Balance
+        mainChart.options.scales.y.min = min - padding;
         mainChart.options.scales.y.max = max + padding;
     }
     
@@ -208,20 +224,41 @@ function updateStats(stats, indicator) {
     }
 }
 
-function updateHeader(indicator, timeRange) {
-    const indicatorInfo = indicatorMap[indicator];
-    if (indicatorInfo) {
-        document.querySelector('.indicator-title').textContent = indicatorInfo.name;
-        
-        // Update date range based on time range
-        const dateRange = getDateRangeLabel(timeRange);
-        document.querySelector('.date-range').textContent = dateRange;
-        
-        // Update source
-        const sourceElement = document.querySelector('.source-link');
-        if (sourceElement) {
-            sourceElement.textContent = `${getFrequencyLabel(timeRange)} • ${indicatorInfo.source}`;
-        }
+function updateHeader(indicatorLabel, timeRange, frequency) {
+    const indicatorInfo = indicatorMap[currentIndicator];
+    if (!indicatorInfo) return;
+    document.querySelector('.indicator-title').textContent = indicatorLabel || indicatorInfo.name;
+    
+    // Update date range based on time range
+    const dateRange = getDateRangeLabel(timeRange);
+    document.querySelector('.date-range').textContent = dateRange;
+    
+    // Update source and frequency
+    const sourceElement = document.querySelector('.source-link');
+    if (sourceElement) {
+        const freq = frequency || getFrequencyLabel(timeRange);
+        sourceElement.textContent = `${freq} • ${indicatorInfo.source}`;
+    }
+
+    // Update source text under chart
+    const sourceText = document.querySelector('.source-text');
+    if (sourceText) {
+        sourceText.textContent = `Source: ${indicatorInfo.source}`;
+    }
+
+    // Update download link with filters
+    const downloadLink = document.getElementById('downloadCsvLink');
+    if (downloadLink) {
+        const params = new URLSearchParams();
+        const regionEl = document.getElementById('filterRegion');
+        const stateEl = document.getElementById('filterState');
+        const modeEl = document.getElementById('filterPaymentMode');
+        const metricEl = document.getElementById('filterMetric');
+        if (regionEl && regionEl.value && regionEl.value !== 'All') params.set('region', regionEl.value);
+        if (stateEl && stateEl.value && stateEl.value !== 'All') params.set('state', stateEl.value);
+        if (modeEl && modeEl.value && modeEl.value !== 'All') params.set('payment_mode', modeEl.value);
+        if (metricEl && metricEl.value) params.set('metric', metricEl.value);
+        downloadLink.href = `${API_BASE_URL}/export/${currentIndicator}?${params.toString()}`;
     }
 }
 
@@ -263,6 +300,7 @@ function setupEventListeners() {
     // Indicator selector
     document.getElementById('indicatorSelect').addEventListener('change', function() {
         currentIndicator = this.value;
+        buildDynamicFilters();
         loadIndicatorData(currentIndicator, currentTimeRange);
     });
 
@@ -271,6 +309,18 @@ function setupEventListeners() {
         const chartType = this.value;
         updateChartType(chartType);
     });
+
+    // Download PNG
+    const downloadPngBtn = document.getElementById('downloadPngBtn');
+    if (downloadPngBtn) {
+        downloadPngBtn.addEventListener('click', function() {
+            if (!mainChart) return;
+            const link = document.createElement('a');
+            link.href = mainChart.toBase64Image();
+            link.download = `${currentIndicator}_chart.png`;
+            link.click();
+        });
+    }
 
     // Category pills
     document.querySelectorAll('.pill').forEach(pill => {
@@ -307,6 +357,54 @@ function updateChartType(chartType) {
     }
     
     mainChart.update();
+}
+
+async function buildDynamicFilters() {
+    // Fetch metadata to populate filters like region/state/payment mode
+    try {
+        const res = await fetch(`${API_BASE_URL}/metadata`);
+        if (!res.ok) return;
+        const meta = await res.json();
+        const container = document.getElementById('dynamicFilters');
+        if (!container) return;
+        const m = meta[currentIndicator] || {};
+        const filters = m.filters || {};
+        container.innerHTML = '';
+        if (filters.regions && filters.regions.length) {
+            const select = document.createElement('select');
+            select.id = 'filterRegion';
+            select.className = 'indicator-selector';
+            select.innerHTML = ['All', ...filters.regions].map(r => `<option value="${r}">${r}</option>`).join('');
+            select.addEventListener('change', () => loadIndicatorData(currentIndicator, currentTimeRange));
+            container.appendChild(select);
+        }
+        if (filters.states && filters.states.length) {
+            const select = document.createElement('select');
+            select.id = 'filterState';
+            select.className = 'indicator-selector';
+            select.innerHTML = ['All', ...filters.states].map(r => `<option value="${r}">${r}</option>`).join('');
+            select.addEventListener('change', () => loadIndicatorData(currentIndicator, currentTimeRange));
+            container.appendChild(select);
+        }
+        if (filters.payment_modes && filters.payment_modes.length) {
+            const select = document.createElement('select');
+            select.id = 'filterPaymentMode';
+            select.className = 'indicator-selector';
+            select.innerHTML = ['All', ...filters.payment_modes].map(r => `<option value="${r}">${r}</option>`).join('');
+            select.addEventListener('change', () => loadIndicatorData(currentIndicator, currentTimeRange));
+            container.appendChild(select);
+        }
+        if (filters.metrics && filters.metrics.length) {
+            const select = document.createElement('select');
+            select.id = 'filterMetric';
+            select.className = 'indicator-selector';
+            select.innerHTML = filters.metrics.map(r => `<option value="${r}">${r}</option>`).join('');
+            select.addEventListener('change', () => loadIndicatorData(currentIndicator, currentTimeRange));
+            container.appendChild(select);
+        }
+    } catch(e) {
+        console.warn('metadata fetch failed', e);
+    }
 }
 
 function updateChart() {
