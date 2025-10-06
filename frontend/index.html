@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>India Economic Dashboard - Visualize Economic Trends</title>
+    <meta name="description" content="Interactive dashboard for visualizing India's key economic indicators including GDP, inflation, unemployment, and more.">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .hero-pattern {
+            background-color: #ffffff;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23667eea' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+        
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+        
+        @keyframes floating {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .pulse-slow {
+            animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        .indicator-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .indicator-card:hover {
+            border-color: #667eea;
+            transform: scale(1.02);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+        }
+        
+        .feature-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+            margin-bottom: 16px;
+        }
+        
+        .stat-number {
+            font-size: 48px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
+</head>
+<body class="hero-pattern">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg fixed w-full top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-2xl font-bold gradient-text">🇮🇳 India Economic Dashboard</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#home" class="text-gray-700 hover:text-purple-600 font-medium transition">Home</a>
+                    <a href="#features" class="text-gray-700 hover:text-purple-600 font-medium transition">Features</a>
+                    <a href="#indicators" class="text-gray-700 hover:text-purple-600 font-medium transition">Indicators</a>
+                    <a href="#stats" class="text-gray-700 hover:text-purple-600 font-medium transition">Statistics</a>
+                    <a href="dashboard.html" class="btn-primary text-white px-6 py-2 rounded-full font-semibold">
+                        Launch Dashboard <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-gray-700">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t">
+            <div class="px-4 py-4 space-y-3">
+                <a href="#home" class="block text-gray-700 hover:text-purple-600 font-medium">Home</a>
+                <a href="#features" class="block text-gray-700 hover:text-purple-600 font-medium">Features</a>
+                <a href="#indicators" class="block text-gray-700 hover:text-purple-600 font-medium">Indicators</a>
+                <a href="#stats" class="block text-gray-700 hover:text-purple-600 font-medium">Statistics</a>
+                <a href="dashboard.html" class="block btn-primary text-white px-6 py-2 rounded-full font-semibold text-center">
+                    Launch Dashboard
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="pt-32 pb-20 px-4">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div data-aos="fade-right">
+                    <h1 class="text-5xl md:text-6xl font-black text-gray-900 mb-6 leading-tight">
+                        Visualize India's
+                        <span class="gradient-text">Economic Growth</span>
+                    </h1>
+                    <p class="text-xl text-gray-600 mb-8 leading-relaxed">
+                        Interactive dashboard with 11 key economic indicators. Analyze trends, compare data, 
+                        and gain insights with advanced visualizations powered by real-time data.
+                    </p>
+                    <div class="flex flex-wrap gap-4">
+                        <a href="dashboard.html" class="btn-primary text-white px-8 py-4 rounded-full font-bold text-lg inline-flex items-center">
+                            <i class="fas fa-chart-line mr-3"></i>
+                            Explore Dashboard
+                        </a>
+                        <a href="#features" class="bg-gray-100 text-gray-800 px-8 py-4 rounded-full font-bold text-lg hover:bg-gray-200 transition inline-flex items-center">
+                            <i class="fas fa-info-circle mr-3"></i>
+                            Learn More
+                        </a>
+                    </div>
+                    <div class="mt-12 flex items-center space-x-8">
+                        <div>
+                            <div class="text-4xl font-bold text-purple-600">11</div>
+                            <div class="text-gray-600 font-medium">Indicators</div>
+                        </div>
+                        <div>
+                            <div class="text-4xl font-bold text-purple-600">15+</div>
+                            <div class="text-gray-600 font-medium">Years Data</div>
+                        </div>
+                        <div>
+                            <div class="text-4xl font-bold text-purple-600">200+</div>
+                            <div class="text-gray-600 font-medium">Data Points</div>
+                        </div>
+                    </div>
+                </div>
+                <div data-aos="fade-left" class="relative">
+                    <div class="floating">
+                        <img src="https://illustrations.popsy.co/purple/data-analysis.svg" alt="Data Analysis" class="w-full">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-4xl md:text-5xl font-black text-gray-900 mb-4">
+                    Powerful <span class="gradient-text">Features</span>
+                </h2>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                    Everything you need to analyze India's economic data in one comprehensive platform
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="indicator-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-3">Interactive Charts</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Beautiful, interactive visualizations with zoom, pan, and export capabilities. 
+                        Multiple chart types including line, bar, area, and scatter plots.
+                    </p>
+                </div>
+
+                <div class="indicator-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-3">Advanced Analytics</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Correlation analysis, trend detection, and statistical insights. 
+                        Compare multiple indicators with normalized views.
+                    </p>
+                </div>
+
+                <div class="indicator-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-3">Responsive Design</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Works seamlessly on desktop, tablet, and mobile devices. 
+                        Access economic data anywhere, anytime.
+                    </p>
+                </div>
+
+                <div class="indicator-card" data-aos="fade-up" data-aos-delay="400">
+                    <div class="feature-icon">
+                        <i class="fas fa-filter"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-3">Smart Filtering</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Filter by date range, region, state, and more. 
+                        Context-aware filters adapt to each indicator.
+                    </p>
+                </div>
+
+                <div class="indicator-card" data-aos="fade-up" data-aos-delay="500">
+                    <div class="feature-icon">
+                        <i class="fas fa-download"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-3">Data Export</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Download filtered data as CSV or export charts as images. 
+                        Perfect for reports and presentations.
+                    </p>
+                </div>
+
+                <div class="indicator-card" data-aos="fade-up" data-aos-delay="600">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-3">Real-time Updates</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Fast, responsive interface with real-time calculations. 
+                        Instant updates as you filter and explore data.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Indicators Section -->
+    <section id="indicators" class="py-20">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-4xl md:text-5xl font-black text-gray-900 mb-4">
+                    11 Economic <span class="gradient-text">Indicators</span>
+                </h2>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                    Comprehensive coverage of India's key economic metrics from 2010 to 2025
+                </p>
+            </div>
+
+            <div id="indicators-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Indicators will be loaded dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Statistics Section -->
+    <section id="stats" class="py-20 gradient-bg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-4xl md:text-5xl font-black text-white mb-4">
+                    Dashboard in Numbers
+                </h2>
+                <p class="text-xl text-purple-100 max-w-2xl mx-auto">
+                    Comprehensive economic data at your fingertips
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-4 gap-8">
+                <div class="text-center" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="stat-number text-white">233</div>
+                    <div class="text-purple-100 text-xl font-semibold mt-2">Data Points</div>
+                </div>
+                <div class="text-center" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="stat-number text-white">11</div>
+                    <div class="text-purple-100 text-xl font-semibold mt-2">Indicators</div>
+                </div>
+                <div class="text-center" data-aos="zoom-in" data-aos-delay="300">
+                    <div class="stat-number text-white">15+</div>
+                    <div class="text-purple-100 text-xl font-semibold mt-2">Years Coverage</div>
+                </div>
+                <div class="text-center" data-aos="zoom-in" data-aos-delay="400">
+                    <div class="stat-number text-white">6+</div>
+                    <div class="text-purple-100 text-xl font-semibold mt-2">Analytics Tools</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 bg-gray-50">
+        <div class="max-w-4xl mx-auto px-4 text-center" data-aos="fade-up">
+            <h2 class="text-4xl md:text-5xl font-black text-gray-900 mb-6">
+                Ready to Explore?
+            </h2>
+            <p class="text-xl text-gray-600 mb-8">
+                Start analyzing India's economic trends with our interactive dashboard
+            </p>
+            <a href="dashboard.html" class="btn-primary text-white px-12 py-5 rounded-full font-bold text-xl inline-flex items-center">
+                <i class="fas fa-rocket mr-3"></i>
+                Launch Dashboard Now
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <h3 class="text-2xl font-bold mb-4 gradient-text">🇮🇳 Economic Dashboard</h3>
+                    <p class="text-gray-400">
+                        Comprehensive economic data visualization platform for India
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Quick Links</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="dashboard.html" class="hover:text-white transition">Dashboard</a></li>
+                        <li><a href="analytics.html" class="hover:text-white transition">Analytics</a></li>
+                        <li><a href="#features" class="hover:text-white transition">Features</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Indicators</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li>GDP Growth</li>
+                        <li>Inflation (CPI)</li>
+                        <li>Unemployment</li>
+                        <li>Trade Balance</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Technology</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li>Python + Flask</li>
+                        <li>Chart.js</li>
+                        <li>Tailwind CSS</li>
+                        <li>RESTful API</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 pt-8 text-center text-gray-400">
+                <p>&copy; 2024 India Economic Dashboard. Built with ❤️ for economic data visualization.</p>
+                <p class="mt-2 text-sm">Data: 2010-2025 | Last Updated: October 2024</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- AOS Animation Library -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true
+        });
+
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+
+        // Load indicators
+        async function loadIndicators() {
+            try {
+                const response = await fetch('/api/indicators');
+                const indicators = await response.json();
+                
+                const grid = document.getElementById('indicators-grid');
+                grid.innerHTML = indicators.map((ind, index) => `
+                    <div class="indicator-card" data-aos="fade-up" data-aos-delay="${index * 100}">
+                        <div class="text-5xl mb-4">${ind.icon}</div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">${ind.name}</h3>
+                        <p class="text-gray-600 text-sm mb-3">${ind.description}</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-semibold text-purple-600 bg-purple-100 px-3 py-1 rounded-full">
+                                ${ind.category}
+                            </span>
+                            <span class="text-xs text-gray-500">${ind.unit}</span>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading indicators:', error);
+            }
+        }
+
+        // Load indicators on page load
+        loadIndicators();
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

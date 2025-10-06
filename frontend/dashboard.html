@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - India Economic Data</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .sidebar {
+            transition: transform 0.3s ease;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar.hidden-mobile {
+                transform: translateX(-100%);
+            }
+        }
+        
+        .metric-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+        }
+        
+        .chart-container {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .indicator-btn {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .indicator-btn:hover {
+            background: #f3f4f6;
+        }
+        
+        .indicator-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Top Navigation -->
+    <nav class="bg-white shadow-sm fixed w-full top-0 z-50">
+        <div class="px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <button id="sidebar-toggle" class="mr-4 text-gray-600 hover:text-purple-600 md:hidden">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                    <a href="index.html" class="text-xl font-bold gradient-bg bg-clip-text text-transparent">
+                        🇮🇳 India Economic Dashboard
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="analytics.html" class="hidden md:inline-flex items-center text-gray-600 hover:text-purple-600 font-medium">
+                        <i class="fas fa-chart-bar mr-2"></i>
+                        Analytics
+                    </a>
+                    <a href="index.html" class="text-gray-600 hover:text-purple-600 font-medium">
+                        <i class="fas fa-home"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex pt-16">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="sidebar w-64 bg-white h-screen sticky top-16 overflow-y-auto border-r">
+            <div class="p-6">
+                <h3 class="text-sm font-bold text-gray-500 uppercase mb-4">Select Indicator</h3>
+                <div id="indicators-list" class="space-y-2">
+                    <!-- Indicators will be loaded here -->
+                </div>
+                
+                <div class="mt-8">
+                    <h3 class="text-sm font-bold text-gray-500 uppercase mb-4">Chart Type</h3>
+                    <div class="space-y-2">
+                        <button class="chart-type-btn w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100 active" data-type="line">
+                            <i class="fas fa-chart-line mr-2"></i> Line Chart
+                        </button>
+                        <button class="chart-type-btn w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100" data-type="bar">
+                            <i class="fas fa-chart-bar mr-2"></i> Bar Chart
+                        </button>
+                        <button class="chart-type-btn w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100" data-type="area">
+                            <i class="fas fa-chart-area mr-2"></i> Area Chart
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="mt-8">
+                    <h3 class="text-sm font-bold text-gray-500 uppercase mb-4">Date Range</h3>
+                    <select id="date-range" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-purple-500">
+                        <option value="all">All Time</option>
+                        <option value="5y">Last 5 Years</option>
+                        <option value="3y">Last 3 Years</option>
+                        <option value="1y" selected>Last Year</option>
+                    </select>
+                </div>
+                
+                <div id="region-filter" class="mt-8 hidden">
+                    <h3 class="text-sm font-bold text-gray-500 uppercase mb-4">Region</h3>
+                    <div class="space-y-2">
+                        <label class="flex items-center">
+                            <input type="checkbox" class="region-checkbox mr-2" value="Urban" checked>
+                            <span>Urban</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" class="region-checkbox mr-2" value="Rural" checked>
+                            <span>Rural</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6 overflow-y-auto">
+            <!-- Metrics Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                <div class="metric-card">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-medium text-gray-600">Latest Value</span>
+                        <i class="fas fa-chart-line text-purple-500"></i>
+                    </div>
+                    <div id="metric-latest" class="text-3xl font-bold text-gray-900">--</div>
+                    <div id="metric-change" class="text-sm mt-1">
+                        <span class="text-green-600"><i class="fas fa-arrow-up"></i> --</span>
+                    </div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-medium text-gray-600">Average</span>
+                        <i class="fas fa-calculator text-blue-500"></i>
+                    </div>
+                    <div id="metric-average" class="text-3xl font-bold text-gray-900">--</div>
+                    <div class="text-sm text-gray-500 mt-1">Mean value</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-medium text-gray-600">Maximum</span>
+                        <i class="fas fa-arrow-up text-green-500"></i>
+                    </div>
+                    <div id="metric-max" class="text-3xl font-bold text-gray-900">--</div>
+                    <div class="text-sm text-gray-500 mt-1">Peak value</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-medium text-gray-600">Minimum</span>
+                        <i class="fas fa-arrow-down text-red-500"></i>
+                    </div>
+                    <div id="metric-min" class="text-3xl font-bold text-gray-900">--</div>
+                    <div class="text-sm text-gray-500 mt-1">Lowest value</div>
+                </div>
+            </div>
+
+            <!-- Main Chart -->
+            <div class="chart-container mb-6">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h2 id="chart-title" class="text-2xl font-bold text-gray-900">GDP Growth Rate</h2>
+                        <p id="chart-subtitle" class="text-gray-600">Quarterly growth trends</p>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button id="export-btn" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition">
+                            <i class="fas fa-download mr-2"></i>Export
+                        </button>
+                        <button id="refresh-btn" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">
+                            <i class="fas fa-sync-alt mr-2"></i>Refresh
+                        </button>
+                    </div>
+                </div>
+                <div style="position: relative; height: 400px;">
+                    <canvas id="mainChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Data Table -->
+            <div class="chart-container">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-bold text-gray-900">Data Table</h3>
+                    <button id="export-csv-btn" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
+                        <i class="fas fa-file-csv mr-2"></i>Export CSV
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table id="data-table" class="w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Value</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Change</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body" class="bg-white divide-y divide-gray-200">
+                            <!-- Data will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // State
+        let currentIndicator = 'gdp';
+        let currentChartType = 'line';
+        let chartInstance = null;
+        let currentData = [];
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadIndicators();
+            loadData();
+            
+            // Event listeners
+            document.getElementById('sidebar-toggle').addEventListener('click', toggleSidebar);
+            document.getElementById('date-range').addEventListener('change', loadData);
+            document.getElementById('refresh-btn').addEventListener('click', loadData);
+            document.getElementById('export-btn').addEventListener('click', exportChart);
+            document.getElementById('export-csv-btn').addEventListener('click', exportCSV);
+            
+            document.querySelectorAll('.chart-type-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    document.querySelectorAll('.chart-type-btn').forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    currentChartType = e.target.dataset.type;
+                    updateChart();
+                });
+            });
+        });
+        
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('hidden-mobile');
+        }
+        
+        async function loadIndicators() {
+            try {
+                const response = await fetch('/api/indicators');
+                const indicators = await response.json();
+                
+                const list = document.getElementById('indicators-list');
+                list.innerHTML = indicators.map(ind => `
+                    <button class="indicator-btn w-full text-left px-4 py-3 rounded-lg ${ind.id === 'gdp' ? 'active' : ''}" data-id="${ind.id}">
+                        <div class="flex items-center">
+                            <span class="text-2xl mr-3">${ind.icon}</span>
+                            <div class="flex-1">
+                                <div class="font-medium text-sm">${ind.name}</div>
+                                <div class="text-xs text-gray-500">${ind.category}</div>
+                            </div>
+                        </div>
+                    </button>
+                `).join('');
+                
+                document.querySelectorAll('.indicator-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        document.querySelectorAll('.indicator-btn').forEach(b => b.classList.remove('active'));
+                        e.currentTarget.classList.add('active');
+                        currentIndicator = e.currentTarget.dataset.id;
+                        loadData();
+                    });
+                });
+            } catch (error) {
+                console.error('Error loading indicators:', error);
+            }
+        }
+        
+        async function loadData() {
+            try {
+                const dateRange = document.getElementById('date-range').value;
+                let startDate = null;
+                
+                if (dateRange !== 'all') {
+                    const now = new Date();
+                    const years = parseInt(dateRange);
+                    startDate = new Date(now.setFullYear(now.getFullYear() - years)).toISOString().split('T')[0];
+                }
+                
+                let url = `/api/data/${currentIndicator}`;
+                if (startDate) url += `?start_date=${startDate}`;
+                
+                const response = await fetch(url);
+                currentData = await response.json();
+                
+                await loadStatistics();
+                updateChart();
+                updateTable();
+            } catch (error) {
+                console.error('Error loading data:', error);
+            }
+        }
+        
+        async function loadStatistics() {
+            try {
+                const response = await fetch(`/api/statistics/${currentIndicator}`);
+                const stats = await response.json();
+                
+                document.getElementById('metric-latest').textContent = stats.latest?.toFixed(2) || '--';
+                document.getElementById('metric-average').textContent = stats.mean?.toFixed(2) || '--';
+                document.getElementById('metric-max').textContent = stats.max?.toFixed(2) || '--';
+                document.getElementById('metric-min').textContent = stats.min?.toFixed(2) || '--';
+                
+                const change = stats.change || 0;
+                const changeEl = document.getElementById('metric-change');
+                if (change >= 0) {
+                    changeEl.innerHTML = `<span class="text-green-600"><i class="fas fa-arrow-up"></i> ${change.toFixed(2)}</span>`;
+                } else {
+                    changeEl.innerHTML = `<span class="text-red-600"><i class="fas fa-arrow-down"></i> ${Math.abs(change).toFixed(2)}</span>`;
+                }
+            } catch (error) {
+                console.error('Error loading statistics:', error);
+            }
+        }
+        
+        function updateChart() {
+            const ctx = document.getElementById('mainChart').getContext('2d');
+            
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+            
+            const labels = currentData.map(d => d.date);
+            const values = currentData.map(d => d.value || d.inflation || d.exports || d.volume || 0);
+            
+            const config = {
+                type: currentChartType,
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Value',
+                        data: values,
+                        backgroundColor: currentChartType === 'bar' 
+                            ? 'rgba(102, 126, 234, 0.5)'
+                            : 'rgba(102, 126, 234, 0.1)',
+                        borderColor: 'rgba(102, 126, 234, 1)',
+                        borderWidth: 2,
+                        fill: currentChartType === 'area',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            padding: 12,
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            borderColor: 'rgba(102, 126, 234, 1)',
+                            borderWidth: 1
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            };
+            
+            chartInstance = new Chart(ctx, config);
+        }
+        
+        function updateTable() {
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = currentData.map((d, i) => {
+                const value = d.value || d.inflation || d.exports || d.volume || 0;
+                const prevValue = i > 0 ? (currentData[i-1].value || currentData[i-1].inflation || currentData[i-1].exports || currentData[i-1].volume || 0) : value;
+                const change = value - prevValue;
+                const changeClass = change >= 0 ? 'text-green-600' : 'text-red-600';
+                const changeIcon = change >= 0 ? 'fa-arrow-up' : 'fa-arrow-down';
+                
+                return `
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${d.date}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${value.toFixed(2)}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm ${changeClass}">
+                            <i class="fas ${changeIcon}"></i> ${Math.abs(change).toFixed(2)}
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        
+        function exportChart() {
+            if (chartInstance) {
+                const url = chartInstance.toBase64Image();
+                const link = document.createElement('a');
+                link.download = `${currentIndicator}-chart.png`;
+                link.href = url;
+                link.click();
+            }
+        }
+        
+        function exportCSV() {
+            const headers = ['Date', 'Value'];
+            const rows = currentData.map(d => {
+                const value = d.value || d.inflation || d.exports || d.volume || 0;
+                return [d.date, value];
+            });
+            
+            let csv = headers.join(',') + '\n';
+            csv += rows.map(row => row.join(',')).join('\n');
+            
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.download = `${currentIndicator}-data.csv`;
+            link.href = url;
+            link.click();
+        }
+    </script>
+</body>
+</html>

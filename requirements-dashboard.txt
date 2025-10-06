@@ -1,0 +1,22 @@
+# Economic Dashboard Requirements
+# Python 3.8+
+
+# Core dependencies
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Visualization
+matplotlib>=3.7.0
+seaborn>=0.12.0
+plotly>=5.14.0
+
+# Dashboard framework
+streamlit>=1.28.0
+
+# Additional utilities
+python-dateutil>=2.8.0
+pytz>=2023.0
+
+# Optional: For enhanced features
+scipy>=1.10.0
+statsmodels>=0.14.0
