@@ -29,7 +29,7 @@ st.markdown("""
         padding: 0rem 1rem;
     }
     .stMetric {
-        background-color: #f0f2f6;
+        background-color: #161b24;
         padding: 15px;
         border-radius: 10px;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -57,7 +57,7 @@ st.markdown("""
         gap: 8px;
     }
     .stTabs [data-baseweb="tab"] {
-        background-color: #f0f2f6;
+        background-color: #161b24;
         border-radius: 8px 8px 0 0;
         padding: 10px 20px;
     }
