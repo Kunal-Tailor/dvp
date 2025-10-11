@@ -229,6 +229,22 @@
                 </div>
             </div>
 
+            <!-- Multi-Indicator Comparison -->
+            <div class="chart-container mb-6">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-900">Multi-Indicator Comparison</h3>
+                        <p class="text-gray-600">Compare key economic indicators</p>
+                    </div>
+                    <button id="update-comparison-btn" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+                        <i class="fas fa-sync-alt mr-2"></i>Update
+                    </button>
+                </div>
+                <div style="position: relative; height: 400px;">
+                    <canvas id="comparisonChart"></canvas>
+                </div>
+            </div>
+
             <!-- Data Table -->
             <div class="chart-container">
                 <div class="flex items-center justify-between mb-4">
@@ -260,12 +276,14 @@
         let currentIndicator = 'gdp';
         let currentChartType = 'line';
         let chartInstance = null;
+        let comparisonChartInstance = null;
         let currentData = [];
         
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             loadIndicators();
             loadData();
+            loadComparisonChart();
             
             // Event listeners
             document.getElementById('sidebar-toggle').addEventListener('click', toggleSidebar);
@@ -273,6 +291,7 @@
             document.getElementById('refresh-btn').addEventListener('click', loadData);
             document.getElementById('export-btn').addEventListener('click', exportChart);
             document.getElementById('export-csv-btn').addEventListener('click', exportCSV);
+            document.getElementById('update-comparison-btn').addEventListener('click', loadComparisonChart);
             
             document.querySelectorAll('.chart-type-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
@@ -389,7 +408,7 @@
             const values = currentData.map(d => d.value || d.inflation || d.exports || d.volume || 0);
             
             const config = {
-                type: currentChartType,
+                type: currentChartType === 'area' ? 'line' : currentChartType,
                 data: {
                     labels: labels,
                     datasets: [{
@@ -397,6 +416,8 @@
                         data: values,
                         backgroundColor: currentChartType === 'bar' 
                             ? 'rgba(102, 126, 234, 0.5)'
+                            : currentChartType === 'area'
+                            ? 'rgba(102, 126, 234, 0.2)'
                             : 'rgba(102, 126, 234, 0.1)',
                         borderColor: 'rgba(102, 126, 234, 1)',
                         borderWidth: 2,
@@ -486,6 +507,85 @@
             link.download = `${currentIndicator}-data.csv`;
             link.href = url;
             link.click();
+        }
+        
+        async function loadComparisonChart() {
+            try {
+                // Fetch summary data for multiple indicators
+                const response = await fetch('/api/summary');
+                const summary = await response.json();
+                
+                // Prepare data for comparison
+                const labels = summary.map(item => item.name);
+                const latestValues = summary.map(item => item.latest);
+                const changes = summary.map(item => item.change);
+                
+                const ctx = document.getElementById('comparisonChart').getContext('2d');
+                
+                if (comparisonChartInstance) {
+                    comparisonChartInstance.destroy();
+                }
+                
+                comparisonChartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Latest Value',
+                                data: latestValues,
+                                backgroundColor: 'rgba(102, 126, 234, 0.6)',
+                                borderColor: 'rgba(102, 126, 234, 1)',
+                                borderWidth: 2
+                            },
+                            {
+                                label: 'Change',
+                                data: changes,
+                                backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                                borderColor: 'rgba(255, 99, 132, 1)',
+                                borderWidth: 2
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top'
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                padding: 12,
+                                titleColor: '#fff',
+                                bodyColor: '#fff',
+                                borderColor: 'rgba(102, 126, 234, 1)',
+                                borderWidth: 1
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false
+                                },
+                                ticks: {
+                                    maxRotation: 45,
+                                    minRotation: 45
+                                }
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading comparison chart:', error);
+            }
         }
     </script>
 </body>
