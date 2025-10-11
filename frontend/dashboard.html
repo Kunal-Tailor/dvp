@@ -355,6 +355,7 @@
         let scatterChartInstance = null;
         let mixedChartInstance = null;
         let currentData = [];
+        let indicatorsMetadata = {}; // Store indicator metadata
         
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
@@ -396,6 +397,16 @@
             try {
                 const response = await fetch('/api/indicators');
                 const indicators = await response.json();
+                
+                // Store metadata for each indicator
+                indicators.forEach(ind => {
+                    indicatorsMetadata[ind.id] = {
+                        name: ind.name,
+                        description: ind.description,
+                        unit: ind.unit,
+                        icon: ind.icon
+                    };
+                });
                 
                 const list = document.getElementById('indicators-list');
                 list.innerHTML = indicators.map(ind => `
@@ -445,6 +456,9 @@
                 const response = await fetch(url);
                 currentData = await response.json();
                 
+                // Update chart title and subtitle based on current indicator
+                updateChartTitle();
+                
                 await loadStatistics();
                 updateChart();
                 updateTable();
@@ -473,6 +487,15 @@
                 }
             } catch (error) {
                 console.error('Error loading statistics:', error);
+            }
+        }
+        
+        function updateChartTitle() {
+            // Update the chart title and subtitle based on selected indicator
+            const metadata = indicatorsMetadata[currentIndicator];
+            if (metadata) {
+                document.getElementById('chart-title').textContent = metadata.name;
+                document.getElementById('chart-subtitle').textContent = metadata.description;
             }
         }
         
