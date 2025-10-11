@@ -136,6 +136,9 @@
                         <button class="chart-type-btn w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100" data-type="area">
                             <i class="fas fa-chart-area mr-2"></i> Area Chart
                         </button>
+                        <button class="chart-type-btn w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100" data-type="pie">
+                            <i class="fas fa-chart-pie mr-2"></i> Pie Chart
+                        </button>
                     </div>
                 </div>
                 
@@ -489,19 +492,48 @@
             });
             const values = currentData.map(d => d.value || d.inflation || d.exports || d.volume || 0);
             
+            // For pie chart, use the latest data points (up to 6 for better visualization)
+            let chartLabels = labels;
+            let chartValues = values;
+            
+            if (currentChartType === 'pie') {
+                // Use last 6 data points for pie chart
+                const dataLimit = Math.min(6, currentData.length);
+                chartLabels = labels.slice(-dataLimit);
+                chartValues = values.slice(-dataLimit);
+            }
+            
             const config = {
                 type: currentChartType === 'area' ? 'line' : currentChartType,
                 data: {
-                    labels: labels,
+                    labels: chartLabels,
                     datasets: [{
                         label: 'Value',
-                        data: values,
-                        backgroundColor: currentChartType === 'bar' 
+                        data: chartValues,
+                        backgroundColor: currentChartType === 'pie' 
+                            ? [
+                                'rgba(255, 99, 132, 0.8)',
+                                'rgba(54, 162, 235, 0.8)',
+                                'rgba(255, 206, 86, 0.8)',
+                                'rgba(75, 192, 192, 0.8)',
+                                'rgba(153, 102, 255, 0.8)',
+                                'rgba(255, 159, 64, 0.8)'
+                            ]
+                            : currentChartType === 'bar' 
                             ? 'rgba(102, 126, 234, 0.5)'
                             : currentChartType === 'area'
                             ? 'rgba(102, 126, 234, 0.2)'
                             : 'rgba(102, 126, 234, 0.1)',
-                        borderColor: 'rgba(102, 126, 234, 1)',
+                        borderColor: currentChartType === 'pie'
+                            ? [
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(255, 159, 64, 1)'
+                            ]
+                            : 'rgba(102, 126, 234, 1)',
                         borderWidth: 2,
                         fill: currentChartType === 'area',
                         tension: 0.4
@@ -512,7 +544,14 @@
                     maintainAspectRatio: false,
                     plugins: {
                         legend: {
-                            display: false
+                            display: currentChartType === 'pie',
+                            position: currentChartType === 'pie' ? 'right' : 'top',
+                            labels: {
+                                padding: 15,
+                                font: {
+                                    size: 12
+                                }
+                            }
                         },
                         tooltip: {
                             backgroundColor: 'rgba(0, 0, 0, 0.8)',
@@ -520,10 +559,19 @@
                             titleColor: '#fff',
                             bodyColor: '#fff',
                             borderColor: 'rgba(102, 126, 234, 1)',
-                            borderWidth: 1
+                            borderWidth: 1,
+                            callbacks: currentChartType === 'pie' ? {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.parsed || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = ((value / total) * 100).toFixed(1);
+                                    return label + ': ' + value.toFixed(2) + ' (' + percentage + '%)';
+                                }
+                            } : {}
                         }
                     },
-                    scales: {
+                    scales: currentChartType === 'pie' ? {} : {
                         y: {
                             beginAtZero: false,
                             grid: {
