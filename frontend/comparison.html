@@ -122,6 +122,21 @@
             animation: fadeInUp 0.6s ease-out;
         }
         
+        @keyframes shimmer {
+            0% {
+                background-position: -1000px 0;
+            }
+            100% {
+                background-position: 1000px 0;
+            }
+        }
+        
+        .shimmer-effect {
+            animation: shimmer 2s infinite linear;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            background-size: 1000px 100%;
+        }
+        
         .loading-spinner {
             border: 4px solid #f3f4f6;
             border-top: 4px solid #667eea;
@@ -210,22 +225,38 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
             <!-- Hero Section -->
-            <div class="card gradient-india text-white mb-8 animate-fade-in">
-                <div class="text-center py-8">
-                    <h1 class="text-4xl font-bold mb-4">🌍 Global Economic Comparison</h1>
-                    <p class="text-xl opacity-90">Compare India's economic performance with major world economies</p>
-                    <div class="mt-6 flex justify-center space-x-4">
-                        <div class="bg-white bg-opacity-20 rounded-lg px-6 py-3">
-                            <div class="text-3xl font-bold">10</div>
-                            <div class="text-sm opacity-90">Countries</div>
+            <div class="card gradient-india text-white mb-8 animate-fade-in" style="background: linear-gradient(135deg, #FF9933 0%, #FF6B00 25%, #138808 50%, #0B5D05 75%, #000080 100%); box-shadow: 0 20px 60px rgba(255, 153, 51, 0.3);">
+                <div class="text-center py-12 px-6">
+                    <div class="mb-6">
+                        <span class="text-6xl">🇮🇳</span>
+                    </div>
+                    <h1 class="text-5xl font-black mb-4 tracking-tight" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">Global Economic Comparison</h1>
+                    <p class="text-2xl font-medium opacity-95 mb-8 max-w-3xl mx-auto">Comprehensive analysis of India's economic performance against major world economies with real-time data insights</p>
+                    <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+                        <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-2xl px-8 py-6 transform hover:scale-105 transition-all duration-300 hover:bg-opacity-30">
+                            <div class="text-5xl font-black mb-2">10</div>
+                            <div class="text-base font-semibold opacity-90">Major Economies</div>
+                            <div class="text-sm opacity-75 mt-1">Global leaders</div>
                         </div>
-                        <div class="bg-white bg-opacity-20 rounded-lg px-6 py-3">
-                            <div class="text-3xl font-bold">8</div>
-                            <div class="text-sm opacity-90">Indicators</div>
+                        <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-2xl px-8 py-6 transform hover:scale-105 transition-all duration-300 hover:bg-opacity-30">
+                            <div class="text-5xl font-black mb-2">8</div>
+                            <div class="text-base font-semibold opacity-90">Key Indicators</div>
+                            <div class="text-sm opacity-75 mt-1">Economic metrics</div>
                         </div>
-                        <div class="bg-white bg-opacity-20 rounded-lg px-6 py-3">
-                            <div class="text-3xl font-bold">15+</div>
-                            <div class="text-sm opacity-90">Years Data</div>
+                        <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-2xl px-8 py-6 transform hover:scale-105 transition-all duration-300 hover:bg-opacity-30">
+                            <div class="text-5xl font-black mb-2">15+</div>
+                            <div class="text-base font-semibold opacity-90">Years of Data</div>
+                            <div class="text-sm opacity-75 mt-1">Historical trends</div>
+                        </div>
+                    </div>
+                    <div class="mt-8 flex justify-center items-center space-x-4">
+                        <div class="flex items-center bg-white bg-opacity-20 backdrop-blur-sm rounded-full px-6 py-3">
+                            <i class="fas fa-chart-line mr-2 text-xl"></i>
+                            <span class="font-semibold">Real-time Analytics</span>
+                        </div>
+                        <div class="flex items-center bg-white bg-opacity-20 backdrop-blur-sm rounded-full px-6 py-3">
+                            <i class="fas fa-globe-americas mr-2 text-xl"></i>
+                            <span class="font-semibold">Global Rankings</span>
                         </div>
                     </div>
                 </div>
@@ -348,26 +379,79 @@
             </div>
 
             <!-- India Performance Summary -->
-            <div class="card gradient-bg text-white animate-fade-in">
-                <h3 class="text-2xl font-bold mb-6 flex items-center">
-                    <span class="text-3xl mr-3">🇮🇳</span>
-                    India's Performance Summary
-                </h3>
+            <div class="card text-white animate-fade-in" style="background: linear-gradient(135deg, #FF9933 0%, #FF6B00 25%, #138808 50%, #0B5D05 75%, #000080 100%); box-shadow: 0 20px 60px rgba(255, 153, 51, 0.3);">
+                <div class="mb-8">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-3xl font-black flex items-center">
+                            <span class="text-5xl mr-4">🇮🇳</span>
+                            <div>
+                                <div>India's Performance Summary</div>
+                                <div class="text-sm font-normal opacity-90 mt-1">Detailed analysis of India's position in the selected indicator</div>
+                            </div>
+                        </h3>
+                        <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-full px-6 py-3">
+                            <i class="fas fa-star mr-2"></i>
+                            <span class="font-semibold" id="india-performance-badge">Analyzing...</span>
+                        </div>
+                    </div>
+                </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="bg-white bg-opacity-20 rounded-lg p-6">
-                        <div class="text-sm opacity-90 mb-2">Current Value</div>
-                        <div id="india-current" class="text-4xl font-bold">--</div>
-                        <div id="india-unit" class="text-sm opacity-75 mt-2">--</div>
+                    <div class="bg-white bg-opacity-25 backdrop-blur-lg rounded-2xl p-8 transform hover:scale-105 transition-all duration-300 border-2 border-white border-opacity-30">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="text-base font-bold opacity-90">Current Value</div>
+                            <div class="bg-white bg-opacity-30 rounded-full p-3">
+                                <i class="fas fa-chart-line text-2xl"></i>
+                            </div>
+                        </div>
+                        <div id="india-current" class="text-5xl font-black mb-2">--</div>
+                        <div id="india-unit" class="text-base font-semibold opacity-80">--</div>
+                        <div class="mt-4 pt-4 border-t border-white border-opacity-30">
+                            <div class="text-sm opacity-75">Latest available data</div>
+                        </div>
                     </div>
-                    <div class="bg-white bg-opacity-20 rounded-lg p-6">
-                        <div class="text-sm opacity-90 mb-2">Global Rank</div>
-                        <div id="india-rank" class="text-4xl font-bold">--</div>
-                        <div class="text-sm opacity-75 mt-2">out of selected countries</div>
+                    <div class="bg-white bg-opacity-25 backdrop-blur-lg rounded-2xl p-8 transform hover:scale-105 transition-all duration-300 border-2 border-white border-opacity-30">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="text-base font-bold opacity-90">Global Rank</div>
+                            <div class="bg-white bg-opacity-30 rounded-full p-3">
+                                <i class="fas fa-trophy text-2xl"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-baseline">
+                            <div id="india-rank" class="text-5xl font-black mb-2">--</div>
+                            <div class="text-2xl font-bold opacity-75 ml-2" id="india-rank-total"></div>
+                        </div>
+                        <div class="text-base font-semibold opacity-80">Position</div>
+                        <div class="mt-4 pt-4 border-t border-white border-opacity-30">
+                            <div class="text-sm opacity-75" id="india-rank-desc">Among selected countries</div>
+                        </div>
                     </div>
-                    <div class="bg-white bg-opacity-20 rounded-lg p-6">
-                        <div class="text-sm opacity-90 mb-2">Change Since 2010</div>
-                        <div id="india-change" class="text-4xl font-bold">--</div>
-                        <div class="text-sm opacity-75 mt-2">percentage points</div>
+                    <div class="bg-white bg-opacity-25 backdrop-blur-lg rounded-2xl p-8 transform hover:scale-105 transition-all duration-300 border-2 border-white border-opacity-30">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="text-base font-bold opacity-90">Change Since 2010</div>
+                            <div class="bg-white bg-opacity-30 rounded-full p-3" id="india-change-icon-container">
+                                <i class="fas fa-arrows-alt-v text-2xl" id="india-change-icon"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-baseline">
+                            <div id="india-change" class="text-5xl font-black mb-2">--</div>
+                            <div class="text-xl font-bold opacity-75 ml-2">pts</div>
+                        </div>
+                        <div class="text-base font-semibold opacity-80" id="india-change-label">Growth trend</div>
+                        <div class="mt-4 pt-4 border-t border-white border-opacity-30">
+                            <div class="text-sm opacity-75" id="india-change-desc">Percentage points change</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-8 bg-white bg-opacity-20 backdrop-blur-sm rounded-xl p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <div class="text-sm font-semibold opacity-90 mb-2">📊 Performance Insight</div>
+                            <div id="india-insight" class="text-base opacity-90">Select an indicator to view India's performance analysis...</div>
+                        </div>
+                        <div>
+                            <div class="text-sm font-semibold opacity-90 mb-2">🎯 Comparison Status</div>
+                            <div id="india-comparison" class="text-base opacity-90">Waiting for data...</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -701,13 +785,40 @@
         function updateIndiaSummary(data) {
             if (data.countries && data.countries.IND) {
                 const india = data.countries.IND;
-                document.getElementById('india-current').textContent = india.latest.toFixed(2);
-                document.getElementById('india-rank').textContent = data.india_position || '--';
+                const totalCountries = Object.keys(data.countries).length;
+                const position = data.india_position || '--';
                 
+                // Update current value
+                document.getElementById('india-current').textContent = india.latest.toFixed(2);
+                
+                // Update rank with total
+                document.getElementById('india-rank').textContent = position;
+                document.getElementById('india-rank-total').textContent = position !== '--' ? `/ ${totalCountries}` : '';
+                document.getElementById('india-rank-desc').textContent = `Among ${totalCountries} selected countries`;
+                
+                // Update change
                 const change = india.change;
                 const changeEl = document.getElementById('india-change');
                 changeEl.textContent = change >= 0 ? `+${change.toFixed(2)}` : change.toFixed(2);
-                changeEl.className = `text-4xl font-bold ${change >= 0 ? 'text-green-300' : 'text-red-300'}`;
+                
+                // Update change styling and icon
+                const changeIconContainer = document.getElementById('india-change-icon-container');
+                const changeIcon = document.getElementById('india-change-icon');
+                const changeLabel = document.getElementById('india-change-label');
+                
+                if (change > 0) {
+                    changeIcon.className = 'fas fa-arrow-up text-2xl';
+                    changeLabel.textContent = 'Positive growth';
+                    changeEl.className = 'text-5xl font-black mb-2';
+                } else if (change < 0) {
+                    changeIcon.className = 'fas fa-arrow-down text-2xl';
+                    changeLabel.textContent = 'Decline';
+                    changeEl.className = 'text-5xl font-black mb-2';
+                } else {
+                    changeIcon.className = 'fas fa-minus text-2xl';
+                    changeLabel.textContent = 'Stable';
+                    changeEl.className = 'text-5xl font-black mb-2';
+                }
                 
                 // Update unit based on indicator
                 const units = {
@@ -721,6 +832,55 @@
                     'gdp_per_capita': 'USD'
                 };
                 document.getElementById('india-unit').textContent = units[selectedIndicator] || '';
+                
+                // Update performance badge
+                const badge = document.getElementById('india-performance-badge');
+                const rankNum = parseInt(position);
+                if (rankNum === 1) {
+                    badge.textContent = 'Top Performer';
+                } else if (rankNum <= 3) {
+                    badge.textContent = 'Strong Performance';
+                } else if (rankNum <= totalCountries / 2) {
+                    badge.textContent = 'Above Average';
+                } else {
+                    badge.textContent = 'Below Average';
+                }
+                
+                // Update insights
+                const indicatorNames = {
+                    'gdp_growth': 'GDP Growth Rate',
+                    'inflation': 'Inflation Rate',
+                    'unemployment': 'Unemployment Rate',
+                    'trade_gdp': 'Trade as % of GDP',
+                    'exports': 'Exports as % of GDP',
+                    'imports': 'Imports as % of GDP',
+                    'fdi': 'Foreign Direct Investment',
+                    'gdp_per_capita': 'GDP Per Capita'
+                };
+                
+                const indicatorName = indicatorNames[selectedIndicator] || selectedIndicator;
+                const insight = document.getElementById('india-insight');
+                
+                if (change > 0) {
+                    insight.textContent = `India's ${indicatorName} has improved by ${Math.abs(change).toFixed(2)} points since 2010, showing positive economic development.`;
+                } else if (change < 0) {
+                    insight.textContent = `India's ${indicatorName} has decreased by ${Math.abs(change).toFixed(2)} points since 2010, indicating challenges in this area.`;
+                } else {
+                    insight.textContent = `India's ${indicatorName} has remained relatively stable since 2010.`;
+                }
+                
+                // Update comparison status
+                const comparison = document.getElementById('india-comparison');
+                const avgValue = Object.values(data.countries).reduce((sum, c) => sum + c.latest, 0) / totalCountries;
+                const diffFromAvg = india.latest - avgValue;
+                
+                if (diffFromAvg > 0) {
+                    comparison.textContent = `India is ${Math.abs(diffFromAvg).toFixed(2)} points above the average (${avgValue.toFixed(2)}) of selected countries.`;
+                } else if (diffFromAvg < 0) {
+                    comparison.textContent = `India is ${Math.abs(diffFromAvg).toFixed(2)} points below the average (${avgValue.toFixed(2)}) of selected countries.`;
+                } else {
+                    comparison.textContent = `India is at the average level (${avgValue.toFixed(2)}) of selected countries.`;
+                }
             }
         }
 
