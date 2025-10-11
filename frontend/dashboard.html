@@ -229,19 +229,89 @@
                 </div>
             </div>
 
-            <!-- Multi-Indicator Comparison -->
+            <!-- Chart Showcase Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                <!-- Doughnut Chart -->
+                <div class="chart-container">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900">Sector Distribution</h3>
+                            <p class="text-gray-600">Economic sectors contribution</p>
+                        </div>
+                        <button id="update-doughnut-btn" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+                            <i class="fas fa-sync-alt mr-2"></i>Update
+                        </button>
+                    </div>
+                    <div style="position: relative; height: 300px;">
+                        <canvas id="doughnutChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Radar Chart -->
+                <div class="chart-container">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900">Economic Performance Radar</h3>
+                            <p class="text-gray-600">Multi-dimensional analysis</p>
+                        </div>
+                        <button id="update-radar-btn" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">
+                            <i class="fas fa-sync-alt mr-2"></i>Update
+                        </button>
+                    </div>
+                    <div style="position: relative; height: 300px;">
+                        <canvas id="radarChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Polar Area and Scatter Charts -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                <!-- Polar Area Chart -->
+                <div class="chart-container">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900">Regional Growth Index</h3>
+                            <p class="text-gray-600">State-wise performance metrics</p>
+                        </div>
+                        <button id="update-polar-btn" class="px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition">
+                            <i class="fas fa-sync-alt mr-2"></i>Update
+                        </button>
+                    </div>
+                    <div style="position: relative; height: 300px;">
+                        <canvas id="polarChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Scatter Chart -->
+                <div class="chart-container">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900">GDP vs Inflation Correlation</h3>
+                            <p class="text-gray-600">Relationship analysis</p>
+                        </div>
+                        <button id="update-scatter-btn" class="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition">
+                            <i class="fas fa-sync-alt mr-2"></i>Update
+                        </button>
+                    </div>
+                    <div style="position: relative; height: 300px;">
+                        <canvas id="scatterChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mixed Chart (Full Width) -->
             <div class="chart-container mb-6">
                 <div class="flex items-center justify-between mb-6">
                     <div>
-                        <h3 class="text-xl font-bold text-gray-900">Multi-Indicator Comparison</h3>
-                        <p class="text-gray-600">Compare key economic indicators</p>
+                        <h3 class="text-xl font-bold text-gray-900">Economic Overview - Mixed Chart</h3>
+                        <p class="text-gray-600">Combined bar and line visualization</p>
                     </div>
-                    <button id="update-comparison-btn" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+                    <button id="update-mixed-btn" class="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition">
                         <i class="fas fa-sync-alt mr-2"></i>Update
                     </button>
                 </div>
                 <div style="position: relative; height: 400px;">
-                    <canvas id="comparisonChart"></canvas>
+                    <canvas id="mixedChart"></canvas>
                 </div>
             </div>
 
@@ -276,14 +346,22 @@
         let currentIndicator = 'gdp';
         let currentChartType = 'line';
         let chartInstance = null;
-        let comparisonChartInstance = null;
+        let doughnutChartInstance = null;
+        let radarChartInstance = null;
+        let polarChartInstance = null;
+        let scatterChartInstance = null;
+        let mixedChartInstance = null;
         let currentData = [];
         
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             loadIndicators();
             loadData();
-            loadComparisonChart();
+            loadDoughnutChart();
+            loadRadarChart();
+            loadPolarChart();
+            loadScatterChart();
+            loadMixedChart();
             
             // Event listeners
             document.getElementById('sidebar-toggle').addEventListener('click', toggleSidebar);
@@ -291,7 +369,11 @@
             document.getElementById('refresh-btn').addEventListener('click', loadData);
             document.getElementById('export-btn').addEventListener('click', exportChart);
             document.getElementById('export-csv-btn').addEventListener('click', exportCSV);
-            document.getElementById('update-comparison-btn').addEventListener('click', loadComparisonChart);
+            document.getElementById('update-doughnut-btn').addEventListener('click', loadDoughnutChart);
+            document.getElementById('update-radar-btn').addEventListener('click', loadRadarChart);
+            document.getElementById('update-polar-btn').addEventListener('click', loadPolarChart);
+            document.getElementById('update-scatter-btn').addEventListener('click', loadScatterChart);
+            document.getElementById('update-mixed-btn').addEventListener('click', loadMixedChart);
             
             document.querySelectorAll('.chart-type-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
@@ -509,43 +591,229 @@
             link.click();
         }
         
-        async function loadComparisonChart() {
+        async function loadDoughnutChart() {
             try {
-                // Fetch summary data for multiple indicators
-                const response = await fetch('/api/summary');
-                const summary = await response.json();
+                const ctx = document.getElementById('doughnutChart').getContext('2d');
                 
-                // Prepare data for comparison
-                const labels = summary.map(item => item.name);
-                const latestValues = summary.map(item => item.latest);
-                const changes = summary.map(item => item.change);
-                
-                const ctx = document.getElementById('comparisonChart').getContext('2d');
-                
-                if (comparisonChartInstance) {
-                    comparisonChartInstance.destroy();
+                if (doughnutChartInstance) {
+                    doughnutChartInstance.destroy();
                 }
                 
-                comparisonChartInstance = new Chart(ctx, {
-                    type: 'bar',
+                // Sample data for economic sectors
+                doughnutChartInstance = new Chart(ctx, {
+                    type: 'doughnut',
                     data: {
-                        labels: labels,
+                        labels: ['Agriculture', 'Industry', 'Services', 'Manufacturing', 'Technology'],
+                        datasets: [{
+                            label: 'Sector Contribution (%)',
+                            data: [18.5, 26.3, 48.9, 15.8, 12.4],
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.8)',
+                                'rgba(54, 162, 235, 0.8)',
+                                'rgba(255, 206, 86, 0.8)',
+                                'rgba(75, 192, 192, 0.8)',
+                                'rgba(153, 102, 255, 0.8)'
+                            ],
+                            borderColor: [
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)'
+                            ],
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'right',
+                                labels: {
+                                    padding: 15,
+                                    font: {
+                                        size: 12
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                padding: 12,
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.label + ': ' + context.parsed + '%';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading doughnut chart:', error);
+            }
+        }
+        
+        async function loadRadarChart() {
+            try {
+                const ctx = document.getElementById('radarChart').getContext('2d');
+                
+                if (radarChartInstance) {
+                    radarChartInstance.destroy();
+                }
+                
+                radarChartInstance = new Chart(ctx, {
+                    type: 'radar',
+                    data: {
+                        labels: ['GDP Growth', 'Employment', 'Exports', 'Investment', 'Innovation', 'Infrastructure'],
                         datasets: [
                             {
-                                label: 'Latest Value',
-                                data: latestValues,
-                                backgroundColor: 'rgba(102, 126, 234, 0.6)',
+                                label: 'Current Year',
+                                data: [7.2, 85, 72, 68, 58, 75],
+                                backgroundColor: 'rgba(102, 126, 234, 0.2)',
                                 borderColor: 'rgba(102, 126, 234, 1)',
-                                borderWidth: 2
+                                borderWidth: 2,
+                                pointBackgroundColor: 'rgba(102, 126, 234, 1)',
+                                pointBorderColor: '#fff',
+                                pointHoverBackgroundColor: '#fff',
+                                pointHoverBorderColor: 'rgba(102, 126, 234, 1)'
                             },
                             {
-                                label: 'Change',
-                                data: changes,
-                                backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                                label: 'Previous Year',
+                                data: [6.5, 82, 68, 65, 55, 70],
+                                backgroundColor: 'rgba(255, 99, 132, 0.2)',
                                 borderColor: 'rgba(255, 99, 132, 1)',
-                                borderWidth: 2
+                                borderWidth: 2,
+                                pointBackgroundColor: 'rgba(255, 99, 132, 1)',
+                                pointBorderColor: '#fff',
+                                pointHoverBackgroundColor: '#fff',
+                                pointHoverBorderColor: 'rgba(255, 99, 132, 1)'
                             }
                         ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top'
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                padding: 12
+                            }
+                        },
+                        scales: {
+                            r: {
+                                beginAtZero: true,
+                                max: 100,
+                                ticks: {
+                                    stepSize: 20
+                                }
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading radar chart:', error);
+            }
+        }
+        
+        async function loadPolarChart() {
+            try {
+                const ctx = document.getElementById('polarChart').getContext('2d');
+                
+                if (polarChartInstance) {
+                    polarChartInstance.destroy();
+                }
+                
+                polarChartInstance = new Chart(ctx, {
+                    type: 'polarArea',
+                    data: {
+                        labels: ['Maharashtra', 'Tamil Nadu', 'Karnataka', 'Gujarat', 'Uttar Pradesh', 'West Bengal'],
+                        datasets: [{
+                            label: 'State GDP Index',
+                            data: [95, 82, 78, 85, 72, 68],
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.6)',
+                                'rgba(54, 162, 235, 0.6)',
+                                'rgba(255, 206, 86, 0.6)',
+                                'rgba(75, 192, 192, 0.6)',
+                                'rgba(153, 102, 255, 0.6)',
+                                'rgba(255, 159, 64, 0.6)'
+                            ],
+                            borderColor: [
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(255, 159, 64, 1)'
+                            ],
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'right',
+                                labels: {
+                                    padding: 10,
+                                    font: {
+                                        size: 11
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                padding: 12
+                            }
+                        },
+                        scales: {
+                            r: {
+                                beginAtZero: true,
+                                ticks: {
+                                    stepSize: 20
+                                }
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading polar chart:', error);
+            }
+        }
+        
+        async function loadScatterChart() {
+            try {
+                const ctx = document.getElementById('scatterChart').getContext('2d');
+                
+                if (scatterChartInstance) {
+                    scatterChartInstance.destroy();
+                }
+                
+                // Generate scatter data showing GDP vs Inflation relationship
+                const scatterData = [
+                    {x: 5.5, y: 4.2}, {x: 6.2, y: 4.8}, {x: 7.1, y: 5.2}, 
+                    {x: 6.8, y: 4.9}, {x: 7.5, y: 5.5}, {x: 8.2, y: 6.1},
+                    {x: 7.8, y: 5.8}, {x: 6.5, y: 5.0}, {x: 7.2, y: 5.3},
+                    {x: 8.0, y: 6.0}, {x: 6.9, y: 5.1}, {x: 7.6, y: 5.7}
+                ];
+                
+                scatterChartInstance = new Chart(ctx, {
+                    type: 'scatter',
+                    data: {
+                        datasets: [{
+                            label: 'GDP vs Inflation',
+                            data: scatterData,
+                            backgroundColor: 'rgba(102, 126, 234, 0.6)',
+                            borderColor: 'rgba(102, 126, 234, 1)',
+                            borderWidth: 2,
+                            pointRadius: 8,
+                            pointHoverRadius: 10
+                        }]
                     },
                     options: {
                         responsive: true,
@@ -558,6 +826,113 @@
                             tooltip: {
                                 backgroundColor: 'rgba(0, 0, 0, 0.8)',
                                 padding: 12,
+                                callbacks: {
+                                    label: function(context) {
+                                        return 'GDP: ' + context.parsed.x.toFixed(1) + '%, Inflation: ' + context.parsed.y.toFixed(1) + '%';
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'GDP Growth Rate (%)',
+                                    font: {
+                                        size: 14,
+                                        weight: 'bold'
+                                    }
+                                },
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Inflation Rate (%)',
+                                    font: {
+                                        size: 14,
+                                        weight: 'bold'
+                                    }
+                                },
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                }
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading scatter chart:', error);
+            }
+        }
+        
+        async function loadMixedChart() {
+            try {
+                const ctx = document.getElementById('mixedChart').getContext('2d');
+                
+                if (mixedChartInstance) {
+                    mixedChartInstance.destroy();
+                }
+                
+                const labels = ['Q1', 'Q2', 'Q3', 'Q4', 'Q1', 'Q2', 'Q3', 'Q4'];
+                
+                mixedChartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'GDP (Bar)',
+                                type: 'bar',
+                                data: [6.8, 7.2, 7.5, 7.1, 6.9, 7.3, 7.6, 7.8],
+                                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                borderWidth: 2,
+                                order: 2
+                            },
+                            {
+                                label: 'Inflation (Line)',
+                                type: 'line',
+                                data: [4.5, 4.8, 5.2, 5.0, 4.9, 5.1, 5.3, 5.5],
+                                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                borderColor: 'rgba(255, 99, 132, 1)',
+                                borderWidth: 3,
+                                fill: true,
+                                tension: 0.4,
+                                order: 1
+                            },
+                            {
+                                label: 'Employment Rate (Line)',
+                                type: 'line',
+                                data: [82, 83, 84, 83.5, 84, 85, 85.5, 86],
+                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 3,
+                                fill: false,
+                                tension: 0.4,
+                                order: 1
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top',
+                                labels: {
+                                    padding: 15,
+                                    font: {
+                                        size: 12
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                padding: 12,
                                 titleColor: '#fff',
                                 bodyColor: '#fff',
                                 borderColor: 'rgba(102, 126, 234, 1)',
@@ -566,25 +941,37 @@
                         },
                         scales: {
                             y: {
-                                beginAtZero: true,
+                                beginAtZero: false,
                                 grid: {
                                     color: 'rgba(0, 0, 0, 0.05)'
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Percentage (%)',
+                                    font: {
+                                        size: 13,
+                                        weight: 'bold'
+                                    }
                                 }
                             },
                             x: {
                                 grid: {
                                     display: false
                                 },
-                                ticks: {
-                                    maxRotation: 45,
-                                    minRotation: 45
+                                title: {
+                                    display: true,
+                                    text: 'Quarter',
+                                    font: {
+                                        size: 13,
+                                        weight: 'bold'
+                                    }
                                 }
                             }
                         }
                     }
                 });
             } catch (error) {
-                console.error('Error loading comparison chart:', error);
+                console.error('Error loading mixed chart:', error);
             }
         }
     </script>
