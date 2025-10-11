@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Country Comparison - India vs World</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js with plugins -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+    
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .gradient-india {
+            background: linear-gradient(135deg, #FF9933 0%, #138808 50%, #000080 100%);
+        }
+        
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.2);
+        }
+        
+        .country-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 16px;
+            border-radius: 9999px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .country-badge:hover {
+            transform: scale(1.05);
+        }
+        
+        .country-badge.selected {
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+        }
+        
+        .indicator-pill {
+            padding: 12px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid #e5e7eb;
+        }
+        
+        .indicator-pill:hover {
+            border-color: #667eea;
+            background: #f3f4f6;
+        }
+        
+        .indicator-pill.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .ranking-row {
+            transition: all 0.2s ease;
+        }
+        
+        .ranking-row:hover {
+            background: #f9fafb;
+            transform: scale(1.02);
+        }
+        
+        .ranking-position {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .ranking-1 { background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); color: white; }
+        .ranking-2 { background: linear-gradient(135deg, #C0C0C0 0%, #808080 100%); color: white; }
+        .ranking-3 { background: linear-gradient(135deg, #CD7F32 0%, #8B4513 100%); color: white; }
+        .ranking-other { background: #e5e7eb; color: #374151; }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate-fade-in {
+            animation: fadeInUp 0.6s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Top Navigation -->
+    <nav class="bg-white shadow-sm fixed w-full top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="index.html" class="text-2xl font-bold gradient-india bg-clip-text text-transparent">
+                        🇮🇳 India vs World
+                    </a>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <a href="dashboard.html" class="text-gray-600 hover:text-purple-600 font-medium">
+                        <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+                    </a>
+                    <a href="analytics.html" class="text-gray-600 hover:text-purple-600 font-medium">
+                        <i class="fas fa-chart-bar mr-2"></i>Analytics
+                    </a>
+                    <a href="index.html" class="text-gray-600 hover:text-purple-600 font-medium">
+                        <i class="fas fa-home"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="pt-20 pb-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <!-- Hero Section -->
+            <div class="card gradient-india text-white mb-8 animate-fade-in">
+                <div class="text-center py-8">
+                    <h1 class="text-4xl font-bold mb-4">🌍 Global Economic Comparison</h1>
+                    <p class="text-xl opacity-90">Compare India's economic performance with major world economies</p>
+                    <div class="mt-6 flex justify-center space-x-4">
+                        <div class="bg-white bg-opacity-20 rounded-lg px-6 py-3">
+                            <div class="text-3xl font-bold">10</div>
+                            <div class="text-sm opacity-90">Countries</div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 rounded-lg px-6 py-3">
+                            <div class="text-3xl font-bold">8</div>
+                            <div class="text-sm opacity-90">Indicators</div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 rounded-lg px-6 py-3">
+                            <div class="text-3xl font-bold">15+</div>
+                            <div class="text-sm opacity-90">Years Data</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Country Selection -->
+            <div class="card mb-8 animate-fade-in">
+                <h2 class="text-2xl font-bold mb-4 flex items-center">
+                    <i class="fas fa-globe-americas mr-3 text-purple-600"></i>
+                    Select Countries to Compare
+                </h2>
+                <div id="country-selector" class="flex flex-wrap gap-3">
+                    <!-- Countries will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Indicator Selection -->
+            <div class="card mb-8 animate-fade-in">
+                <h2 class="text-2xl font-bold mb-4 flex items-center">
+                    <i class="fas fa-chart-line mr-3 text-purple-600"></i>
+                    Select Economic Indicator
+                </h2>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="indicator-pill active" data-indicator="gdp_growth">
+                        <div class="text-2xl mb-2">📈</div>
+                        <div class="font-semibold">GDP Growth</div>
+                        <div class="text-xs opacity-75">Annual %</div>
+                    </div>
+                    <div class="indicator-pill" data-indicator="inflation">
+                        <div class="text-2xl mb-2">💰</div>
+                        <div class="font-semibold">Inflation</div>
+                        <div class="text-xs opacity-75">Annual %</div>
+                    </div>
+                    <div class="indicator-pill" data-indicator="unemployment">
+                        <div class="text-2xl mb-2">👥</div>
+                        <div class="font-semibold">Unemployment</div>
+                        <div class="text-xs opacity-75">Total %</div>
+                    </div>
+                    <div class="indicator-pill" data-indicator="trade_gdp">
+                        <div class="text-2xl mb-2">🌐</div>
+                        <div class="font-semibold">Trade</div>
+                        <div class="text-xs opacity-75">% of GDP</div>
+                    </div>
+                    <div class="indicator-pill" data-indicator="exports">
+                        <div class="text-2xl mb-2">📦</div>
+                        <div class="font-semibold">Exports</div>
+                        <div class="text-xs opacity-75">% of GDP</div>
+                    </div>
+                    <div class="indicator-pill" data-indicator="imports">
+                        <div class="text-2xl mb-2">📥</div>
+                        <div class="font-semibold">Imports</div>
+                        <div class="text-xs opacity-75">% of GDP</div>
+                    </div>
+                    <div class="indicator-pill" data-indicator="fdi">
+                        <div class="text-2xl mb-2">💼</div>
+                        <div class="font-semibold">FDI</div>
+                        <div class="text-xs opacity-75">Net Inflows</div>
+                    </div>
+                    <div class="indicator-pill" data-indicator="gdp_per_capita">
+                        <div class="text-2xl mb-2">💵</div>
+                        <div class="font-semibold">GDP/Capita</div>
+                        <div class="text-xs opacity-75">Current US$</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <!-- Trend Comparison Chart -->
+                <div class="card animate-fade-in">
+                    <h3 class="text-xl font-bold mb-4">📊 Trend Comparison (2010-2024)</h3>
+                    <div style="position: relative; height: 300px;">
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Bar Comparison Chart -->
+                <div class="card animate-fade-in">
+                    <h3 class="text-xl font-bold mb-4">📊 Latest Values Comparison</h3>
+                    <div style="position: relative; height: 300px;">
+                        <canvas id="barChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Radar Chart -->
+                <div class="card animate-fade-in">
+                    <h3 class="text-xl font-bold mb-4">🎯 Multi-Indicator Analysis</h3>
+                    <div style="position: relative; height: 300px;">
+                        <canvas id="radarChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Rankings -->
+                <div class="card animate-fade-in">
+                    <h3 class="text-xl font-bold mb-4">🏆 Country Rankings</h3>
+                    <div id="rankings-container" class="space-y-3">
+                        <!-- Rankings will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- India Performance Summary -->
+            <div class="card gradient-bg text-white animate-fade-in">
+                <h3 class="text-2xl font-bold mb-6 flex items-center">
+                    <span class="text-3xl mr-3">🇮🇳</span>
+                    India's Performance Summary
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white bg-opacity-20 rounded-lg p-6">
+                        <div class="text-sm opacity-90 mb-2">Current Value</div>
+                        <div id="india-current" class="text-4xl font-bold">--</div>
+                        <div id="india-unit" class="text-sm opacity-75 mt-2">--</div>
+                    </div>
+                    <div class="bg-white bg-opacity-20 rounded-lg p-6">
+                        <div class="text-sm opacity-90 mb-2">Global Rank</div>
+                        <div id="india-rank" class="text-4xl font-bold">--</div>
+                        <div class="text-sm opacity-75 mt-2">out of selected countries</div>
+                    </div>
+                    <div class="bg-white bg-opacity-20 rounded-lg p-6">
+                        <div class="text-sm opacity-90 mb-2">Change Since 2010</div>
+                        <div id="india-change" class="text-4xl font-bold">--</div>
+                        <div class="text-sm opacity-75 mt-2">percentage points</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // State
+        let selectedCountries = ['IND', 'CHN', 'USA', 'GBR', 'JPN', 'DEU'];
+        let selectedIndicator = 'gdp_growth';
+        let allCountries = [];
+        let charts = {};
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCountries();
+            setupIndicatorSelection();
+        });
+
+        async function loadCountries() {
+            try {
+                const response = await fetch('/api/comparison/countries');
+                allCountries = await response.json();
+                
+                const container = document.getElementById('country-selector');
+                container.innerHTML = allCountries.map(country => `
+                    <div class="country-badge ${selectedCountries.includes(country.code) ? 'selected' : ''}" 
+                         data-code="${country.code}"
+                         style="background-color: ${country.color}20; color: ${country.color}; border: 2px solid ${country.color};">
+                        <span class="text-2xl mr-2">${country.flag}</span>
+                        <span class="font-semibold">${country.name}</span>
+                    </div>
+                `).join('');
+                
+                // Add click handlers
+                document.querySelectorAll('.country-badge').forEach(badge => {
+                    badge.addEventListener('click', () => {
+                        const code = badge.dataset.code;
+                        
+                        if (code === 'IND') return; // India is always selected
+                        
+                        if (selectedCountries.includes(code)) {
+                            selectedCountries = selectedCountries.filter(c => c !== code);
+                            badge.classList.remove('selected');
+                        } else {
+                            selectedCountries.push(code);
+                            badge.classList.add('selected');
+                        }
+                        
+                        loadComparisonData();
+                    });
+                });
+                
+                // Load initial data
+                loadComparisonData();
+                loadRadarData();
+            } catch (error) {
+                console.error('Error loading countries:', error);
+            }
+        }
+
+        function setupIndicatorSelection() {
+            document.querySelectorAll('.indicator-pill').forEach(pill => {
+                pill.addEventListener('click', () => {
+                    document.querySelectorAll('.indicator-pill').forEach(p => p.classList.remove('active'));
+                    pill.classList.add('active');
+                    selectedIndicator = pill.dataset.indicator;
+                    loadComparisonData();
+                });
+            });
+        }
+
+        async function loadComparisonData() {
+            try {
+                const countriesParam = selectedCountries.join(',');
+                const response = await fetch(`/api/comparison/${selectedIndicator}?countries=${countriesParam}`);
+                const data = await response.json();
+                
+                updateTrendChart(data);
+                updateBarChart(data);
+                updateRankings(data);
+                updateIndiaSummary(data);
+            } catch (error) {
+                console.error('Error loading comparison data:', error);
+            }
+        }
+
+        async function loadRadarData() {
+            try {
+                const countriesParam = selectedCountries.slice(0, 5).join(','); // Limit to 5 for readability
+                const response = await fetch(`/api/comparison/multi-indicator?countries=${countriesParam}`);
+                const data = await response.json();
+                
+                updateRadarChart(data);
+            } catch (error) {
+                console.error('Error loading radar data:', error);
+            }
+        }
+
+        function updateTrendChart(data) {
+            const ctx = document.getElementById('trendChart').getContext('2d');
+            
+            if (charts.trend) {
+                charts.trend.destroy();
+            }
+            
+            const datasets = Object.entries(data.countries).map(([code, country]) => ({
+                label: country.name,
+                data: country.values,
+                borderColor: country.color,
+                backgroundColor: `${country.color}20`,
+                borderWidth: code === 'IND' ? 4 : 2,
+                tension: 0.4,
+                fill: code === 'IND'
+            }));
+            
+            charts.trend = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.years,
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 15
+                            }
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateBarChart(data) {
+            const ctx = document.getElementById('barChart').getContext('2d');
+            
+            if (charts.bar) {
+                charts.bar.destroy();
+            }
+            
+            const countries = Object.values(data.countries);
+            const labels = countries.map(c => c.flag + ' ' + c.name);
+            const values = countries.map(c => c.latest);
+            const colors = countries.map(c => c.color);
+            
+            charts.bar = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Latest Value',
+                        data: values,
+                        backgroundColor: colors.map(c => `${c}80`),
+                        borderColor: colors,
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateRadarChart(data) {
+            const ctx = document.getElementById('radarChart').getContext('2d');
+            
+            if (charts.radar) {
+                charts.radar.destroy();
+            }
+            
+            const datasets = Object.entries(data.countries).map(([code, country]) => ({
+                label: country.flag + ' ' + country.name,
+                data: country.values,
+                borderColor: country.color,
+                backgroundColor: `${country.color}30`,
+                borderWidth: code === 'IND' ? 3 : 2
+            }));
+            
+            charts.radar = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['GDP Growth', 'Unemployment', 'Inflation', 'Trade'],
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 15
+                            }
+                        }
+                    },
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateRankings(data) {
+            const container = document.getElementById('rankings-container');
+            
+            if (!data.rankings || data.rankings.length === 0) {
+                container.innerHTML = '<div class="text-gray-500">No ranking data available</div>';
+                return;
+            }
+            
+            container.innerHTML = data.rankings.map((rank, index) => {
+                const position = index + 1;
+                const country = allCountries.find(c => c.code === rank.country_code);
+                const positionClass = position <= 3 ? `ranking-${position}` : 'ranking-other';
+                const isIndia = rank.country_code === 'IND';
+                
+                return `
+                    <div class="ranking-row flex items-center justify-between p-4 rounded-lg ${isIndia ? 'bg-orange-50 border-2 border-orange-400' : 'bg-gray-50'}">
+                        <div class="flex items-center space-x-4">
+                            <div class="ranking-position ${positionClass}">
+                                ${position <= 3 ? ['🥇', '🥈', '🥉'][position - 1] : position}
+                            </div>
+                            <div class="text-3xl">${country ? country.flag : ''}</div>
+                            <div>
+                                <div class="font-semibold text-lg">${rank.country}</div>
+                                <div class="text-sm text-gray-500">${rank.country_code}</div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-2xl font-bold" style="color: ${country ? country.color : '#000'}">
+                                ${rank.value.toFixed(2)}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateIndiaSummary(data) {
+            if (data.countries && data.countries.IND) {
+                const india = data.countries.IND;
+                document.getElementById('india-current').textContent = india.latest.toFixed(2);
+                document.getElementById('india-rank').textContent = data.india_position || '--';
+                
+                const change = india.change;
+                const changeEl = document.getElementById('india-change');
+                changeEl.textContent = change >= 0 ? `+${change.toFixed(2)}` : change.toFixed(2);
+                changeEl.className = `text-4xl font-bold ${change >= 0 ? 'text-green-300' : 'text-red-300'}`;
+                
+                // Update unit based on indicator
+                const units = {
+                    'gdp_growth': '%',
+                    'inflation': '%',
+                    'unemployment': '%',
+                    'trade_gdp': '% of GDP',
+                    'exports': '% of GDP',
+                    'imports': '% of GDP',
+                    'fdi': 'USD',
+                    'gdp_per_capita': 'USD'
+                };
+                document.getElementById('india-unit').textContent = units[selectedIndicator] || '';
+            }
+        }
+    </script>
+</body>
+</html>
