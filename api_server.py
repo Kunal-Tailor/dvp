@@ -8,14 +8,16 @@ from flask_cors import CORS
 import sys
 sys.path.append('.')
 from backend.data_processor import EconomicDataProcessor
+from backend.country_comparison import CountryComparison
 from datetime import datetime, timedelta
 import pandas as pd
 
 app = Flask(__name__, static_folder='frontend', static_url_path='')
 CORS(app)
 
-# Initialize data processor
+# Initialize data processor and country comparison
 processor = EconomicDataProcessor()
+comparator = CountryComparison()
 
 @app.route('/')
 def index():
@@ -301,9 +303,109 @@ def health_check():
         'timestamp': datetime.now().isoformat()
     })
 
+# ============================================
+# COUNTRY COMPARISON ENDPOINTS
+# ============================================
+
+@app.route('/api/comparison/countries')
+def get_available_countries():
+    """Get list of available countries for comparison"""
+    countries = [
+        {
+            'code': code,
+            'name': info['name'],
+            'flag': info['flag'],
+            'color': info['color']
+        }
+        for code, info in comparator.COMPARISON_COUNTRIES.items()
+    ]
+    return jsonify(countries)
+
+@app.route('/api/comparison/<indicator>')
+def get_country_comparison(indicator):
+    """Get comparison data for a specific indicator"""
+    
+    # Get query parameters
+    countries = request.args.get('countries', 'IND,CHN,USA,GBR,JPN,DEU').split(',')
+    start_year = int(request.args.get('start_year', 2010))
+    end_year = int(request.args.get('end_year', 2024))
+    
+    try:
+        data = comparator.get_comparison_data(
+            indicator, 
+            countries, 
+            start_year, 
+            end_year
+        )
+        return jsonify(data)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/comparison/relative/<indicator>')
+def get_relative_comparison(indicator):
+    """Get relative comparison with India as baseline (100)"""
+    
+    base_country = request.args.get('base', 'IND')
+    compare_countries = request.args.get('countries', 'CHN,USA,GBR,JPN,DEU,BRA').split(',')
+    
+    try:
+        data = comparator.get_relative_comparison(
+            indicator, 
+            base_country, 
+            compare_countries
+        )
+        return jsonify(data)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/comparison/multi-indicator')
+def get_multi_indicator_comparison():
+    """Get multi-indicator comparison for radar chart"""
+    
+    countries = request.args.get('countries', 'IND,CHN,USA,GBR,JPN').split(',')
+    
+    try:
+        data = comparator.get_multi_indicator_comparison(countries)
+        return jsonify(data)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/comparison/rankings/<indicator>')
+def get_country_rankings(indicator):
+    """Get country rankings for a specific indicator"""
+    
+    countries = request.args.get('countries', None)
+    if countries:
+        countries = countries.split(',')
+    
+    try:
+        data = comparator.get_comparison_data(indicator, countries)
+        
+        # Return just the rankings
+        return jsonify({
+            'indicator': indicator,
+            'rankings': data['rankings'],
+            'india_position': data['india_position']
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/comparison/export')
+def export_comparison_data():
+    """Export all comparison data"""
+    try:
+        comparator.export_all_comparisons()
+        return jsonify({
+            'status': 'success',
+            'message': 'Comparison data exported successfully'
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 if __name__ == '__main__':
     print("🚀 Starting Economic Dashboard API Server...")
     print("📊 Loaded datasets:", len(processor.datasets))
+    print("🌍 Country comparison enabled with", len(comparator.COMPARISON_COUNTRIES), "countries")
     print("🌐 Server running at: http://localhost:5000")
     print("📱 Frontend available at: http://localhost:5000")
     app.run(debug=True, host='0.0.0.0', port=5000)
