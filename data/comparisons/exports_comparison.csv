@@ -1,0 +1,151 @@
+country_code,country,year,value,indicator
+IND,India,2010,4.09,exports
+IND,India,2011,5.72,exports
+IND,India,2012,4.04,exports
+IND,India,2013,8.53,exports
+IND,India,2014,4.94,exports
+IND,India,2015,6.63,exports
+IND,India,2016,4.2,exports
+IND,India,2017,4.56,exports
+IND,India,2018,2.75,exports
+IND,India,2019,3.23,exports
+IND,India,2020,2.02,exports
+IND,India,2021,5.82,exports
+IND,India,2022,3.74,exports
+IND,India,2023,7.25,exports
+IND,India,2024,5.72,exports
+CHN,China,2010,5.6,exports
+CHN,China,2011,5.29,exports
+CHN,China,2012,7.01,exports
+CHN,China,2013,6.07,exports
+CHN,China,2014,5.59,exports
+CHN,China,2015,3.15,exports
+CHN,China,2016,4.1,exports
+CHN,China,2017,5.12,exports
+CHN,China,2018,5.08,exports
+CHN,China,2019,1.3,exports
+CHN,China,2020,2.68,exports
+CHN,China,2021,5.04,exports
+CHN,China,2022,2.88,exports
+CHN,China,2023,6.0,exports
+CHN,China,2024,5.69,exports
+USA,United States,2010,7.05,exports
+USA,United States,2011,3.29,exports
+USA,United States,2012,6.94,exports
+USA,United States,2013,6.73,exports
+USA,United States,2014,8.57,exports
+USA,United States,2015,4.92,exports
+USA,United States,2016,5.02,exports
+USA,United States,2017,4.23,exports
+USA,United States,2018,2.08,exports
+USA,United States,2019,3.71,exports
+USA,United States,2020,3.93,exports
+USA,United States,2021,4.24,exports
+USA,United States,2022,3.2,exports
+USA,United States,2023,6.83,exports
+USA,United States,2024,7.23,exports
+GBR,United Kingdom,2010,6.04,exports
+GBR,United Kingdom,2011,7.57,exports
+GBR,United Kingdom,2012,7.82,exports
+GBR,United Kingdom,2013,6.05,exports
+GBR,United Kingdom,2014,6.61,exports
+GBR,United Kingdom,2015,8.81,exports
+GBR,United Kingdom,2016,6.88,exports
+GBR,United Kingdom,2017,6.78,exports
+GBR,United Kingdom,2018,1.48,exports
+GBR,United Kingdom,2019,1.92,exports
+GBR,United Kingdom,2020,3.49,exports
+GBR,United Kingdom,2021,5.44,exports
+GBR,United Kingdom,2022,5.24,exports
+GBR,United Kingdom,2023,3.98,exports
+GBR,United Kingdom,2024,8.33,exports
+JPN,Japan,2010,5.67,exports
+JPN,Japan,2011,5.31,exports
+JPN,Japan,2012,5.23,exports
+JPN,Japan,2013,7.64,exports
+JPN,Japan,2014,6.21,exports
+JPN,Japan,2015,6.45,exports
+JPN,Japan,2016,0.97,exports
+JPN,Japan,2017,5.6,exports
+JPN,Japan,2018,2.11,exports
+JPN,Japan,2019,3.16,exports
+JPN,Japan,2020,3.24,exports
+JPN,Japan,2021,2.73,exports
+JPN,Japan,2022,3.14,exports
+JPN,Japan,2023,5.04,exports
+JPN,Japan,2024,2.17,exports
+DEU,Germany,2010,4.97,exports
+DEU,Germany,2011,6.81,exports
+DEU,Germany,2012,7.29,exports
+DEU,Germany,2013,8.19,exports
+DEU,Germany,2014,8.52,exports
+DEU,Germany,2015,8.66,exports
+DEU,Germany,2016,4.19,exports
+DEU,Germany,2017,3.45,exports
+DEU,Germany,2018,3.02,exports
+DEU,Germany,2019,2.14,exports
+DEU,Germany,2020,-0.88,exports
+DEU,Germany,2021,0.78,exports
+DEU,Germany,2022,5.21,exports
+DEU,Germany,2023,4.29,exports
+DEU,Germany,2024,6.02,exports
+BRA,Brazil,2010,4.3,exports
+BRA,Brazil,2011,6.75,exports
+BRA,Brazil,2012,7.64,exports
+BRA,Brazil,2013,8.77,exports
+BRA,Brazil,2014,6.36,exports
+BRA,Brazil,2015,5.53,exports
+BRA,Brazil,2016,6.06,exports
+BRA,Brazil,2017,5.77,exports
+BRA,Brazil,2018,1.21,exports
+BRA,Brazil,2019,1.51,exports
+BRA,Brazil,2020,4.38,exports
+BRA,Brazil,2021,5.86,exports
+BRA,Brazil,2022,6.18,exports
+BRA,Brazil,2023,7.86,exports
+BRA,Brazil,2024,4.92,exports
+RUS,Russia,2010,4.49,exports
+RUS,Russia,2011,6.31,exports
+RUS,Russia,2012,8.65,exports
+RUS,Russia,2013,8.76,exports
+RUS,Russia,2014,6.09,exports
+RUS,Russia,2015,6.91,exports
+RUS,Russia,2016,7.76,exports
+RUS,Russia,2017,4.86,exports
+RUS,Russia,2018,3.36,exports
+RUS,Russia,2019,3.09,exports
+RUS,Russia,2020,4.3,exports
+RUS,Russia,2021,6.82,exports
+RUS,Russia,2022,4.2,exports
+RUS,Russia,2023,3.06,exports
+RUS,Russia,2024,8.83,exports
+ZAF,South Africa,2010,4.38,exports
+ZAF,South Africa,2011,6.36,exports
+ZAF,South Africa,2012,7.83,exports
+ZAF,South Africa,2013,6.76,exports
+ZAF,South Africa,2014,5.2,exports
+ZAF,South Africa,2015,6.03,exports
+ZAF,South Africa,2016,3.3,exports
+ZAF,South Africa,2017,4.0,exports
+ZAF,South Africa,2018,3.37,exports
+ZAF,South Africa,2019,2.29,exports
+ZAF,South Africa,2020,1.24,exports
+ZAF,South Africa,2021,1.86,exports
+ZAF,South Africa,2022,5.38,exports
+ZAF,South Africa,2023,6.81,exports
+ZAF,South Africa,2024,9.59,exports
+AUS,Australia,2010,5.5,exports
+AUS,Australia,2011,7.98,exports
+AUS,Australia,2012,6.14,exports
+AUS,Australia,2013,6.75,exports
+AUS,Australia,2014,7.87,exports
+AUS,Australia,2015,9.62,exports
+AUS,Australia,2016,4.09,exports
+AUS,Australia,2017,3.15,exports
+AUS,Australia,2018,3.11,exports
+AUS,Australia,2019,1.57,exports
+AUS,Australia,2020,3.71,exports
+AUS,Australia,2021,3.07,exports
+AUS,Australia,2022,3.06,exports
+AUS,Australia,2023,4.25,exports
+AUS,Australia,2024,5.71,exports

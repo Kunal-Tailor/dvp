@@ -1,106 +1,151 @@
 country_code,country,year,value,indicator
-IND,India,2010,8.3,gdp_growth
-IND,India,2011,6.6,gdp_growth
-IND,India,2012,5.2,gdp_growth
-IND,India,2013,6.7,gdp_growth
-IND,India,2014,7.3,gdp_growth
-IND,India,2015,8.2,gdp_growth
-IND,India,2016,8.2,gdp_growth
-IND,India,2017,6.8,gdp_growth
-IND,India,2018,6.5,gdp_growth
-IND,India,2019,4.1,gdp_growth
-IND,India,2020,-7.3,gdp_growth
-IND,India,2021,8.9,gdp_growth
-IND,India,2022,7.0,gdp_growth
-IND,India,2023,7.2,gdp_growth
-IND,India,2024,7.8,gdp_growth
-CHN,China,2010,10.6,gdp_growth
-CHN,China,2011,9.5,gdp_growth
-CHN,China,2012,7.9,gdp_growth
-CHN,China,2013,7.8,gdp_growth
-CHN,China,2014,7.3,gdp_growth
-CHN,China,2015,7.0,gdp_growth
-CHN,China,2016,6.8,gdp_growth
-CHN,China,2017,6.9,gdp_growth
-CHN,China,2018,6.7,gdp_growth
-CHN,China,2019,6.0,gdp_growth
-CHN,China,2020,2.2,gdp_growth
-CHN,China,2021,8.4,gdp_growth
-CHN,China,2022,3.0,gdp_growth
-CHN,China,2023,5.2,gdp_growth
-CHN,China,2024,5.0,gdp_growth
-USA,United States,2010,2.6,gdp_growth
-USA,United States,2011,1.6,gdp_growth
-USA,United States,2012,2.2,gdp_growth
-USA,United States,2013,1.8,gdp_growth
-USA,United States,2014,2.5,gdp_growth
-USA,United States,2015,3.1,gdp_growth
-USA,United States,2016,1.7,gdp_growth
-USA,United States,2017,2.3,gdp_growth
-USA,United States,2018,3.0,gdp_growth
-USA,United States,2019,2.3,gdp_growth
-USA,United States,2020,-3.4,gdp_growth
-USA,United States,2021,5.9,gdp_growth
-USA,United States,2022,2.1,gdp_growth
-USA,United States,2023,2.5,gdp_growth
-USA,United States,2024,2.8,gdp_growth
-GBR,United Kingdom,2010,1.9,gdp_growth
-GBR,United Kingdom,2011,1.6,gdp_growth
-GBR,United Kingdom,2012,1.5,gdp_growth
-GBR,United Kingdom,2013,2.1,gdp_growth
-GBR,United Kingdom,2014,2.6,gdp_growth
-GBR,United Kingdom,2015,2.4,gdp_growth
-GBR,United Kingdom,2016,1.7,gdp_growth
-GBR,United Kingdom,2017,1.7,gdp_growth
-GBR,United Kingdom,2018,1.3,gdp_growth
-GBR,United Kingdom,2019,1.6,gdp_growth
-GBR,United Kingdom,2020,-9.3,gdp_growth
-GBR,United Kingdom,2021,7.6,gdp_growth
-GBR,United Kingdom,2022,4.1,gdp_growth
-GBR,United Kingdom,2023,0.5,gdp_growth
-GBR,United Kingdom,2024,1.2,gdp_growth
-JPN,Japan,2010,4.2,gdp_growth
-JPN,Japan,2011,-0.1,gdp_growth
-JPN,Japan,2012,1.5,gdp_growth
-JPN,Japan,2013,2.0,gdp_growth
-JPN,Japan,2014,0.4,gdp_growth
-JPN,Japan,2015,1.6,gdp_growth
-JPN,Japan,2016,0.8,gdp_growth
-JPN,Japan,2017,1.7,gdp_growth
-JPN,Japan,2018,0.6,gdp_growth
-JPN,Japan,2019,0.0,gdp_growth
-JPN,Japan,2020,-4.5,gdp_growth
-JPN,Japan,2021,2.1,gdp_growth
-JPN,Japan,2022,1.0,gdp_growth
-JPN,Japan,2023,1.9,gdp_growth
-JPN,Japan,2024,1.5,gdp_growth
-DEU,Germany,2010,4.2,gdp_growth
-DEU,Germany,2011,3.9,gdp_growth
-DEU,Germany,2012,0.4,gdp_growth
-DEU,Germany,2013,0.4,gdp_growth
-DEU,Germany,2014,2.2,gdp_growth
-DEU,Germany,2015,1.5,gdp_growth
-DEU,Germany,2016,2.2,gdp_growth
-DEU,Germany,2017,2.7,gdp_growth
-DEU,Germany,2018,1.1,gdp_growth
-DEU,Germany,2019,1.1,gdp_growth
-DEU,Germany,2020,-3.7,gdp_growth
-DEU,Germany,2021,3.2,gdp_growth
-DEU,Germany,2022,1.8,gdp_growth
-DEU,Germany,2023,-0.3,gdp_growth
-DEU,Germany,2024,0.8,gdp_growth
-BRA,Brazil,2010,7.5,gdp_growth
-BRA,Brazil,2011,4.0,gdp_growth
-BRA,Brazil,2012,1.9,gdp_growth
-BRA,Brazil,2013,3.0,gdp_growth
-BRA,Brazil,2014,0.5,gdp_growth
-BRA,Brazil,2015,-3.5,gdp_growth
-BRA,Brazil,2016,-3.3,gdp_growth
-BRA,Brazil,2017,1.3,gdp_growth
-BRA,Brazil,2018,1.8,gdp_growth
-BRA,Brazil,2019,1.2,gdp_growth
-BRA,Brazil,2020,-3.9,gdp_growth
-BRA,Brazil,2021,5.0,gdp_growth
-BRA,Brazil,2022,3.0,gdp_growth
-BRA,Brazil,2023,2.9,gdp_growth
-BRA,Brazil,2024,2.5,gdp_growth
+IND,India,2010,7.41,gdp_growth
+IND,India,2011,8.71,gdp_growth
+IND,India,2012,8.95,gdp_growth
+IND,India,2013,10.26,gdp_growth
+IND,India,2014,9.35,gdp_growth
+IND,India,2015,10.16,gdp_growth
+IND,India,2016,10.11,gdp_growth
+IND,India,2017,7.13,gdp_growth
+IND,India,2018,7.49,gdp_growth
+IND,India,2019,3.53,gdp_growth
+IND,India,2020,-10.22,gdp_growth
+IND,India,2021,6.9,gdp_growth
+IND,India,2022,7.5,gdp_growth
+IND,India,2023,3.96,gdp_growth
+IND,India,2024,7.41,gdp_growth
+CHN,China,2010,9.97,gdp_growth
+CHN,China,2011,7.8,gdp_growth
+CHN,China,2012,11.06,gdp_growth
+CHN,China,2013,9.77,gdp_growth
+CHN,China,2014,10.76,gdp_growth
+CHN,China,2015,12.01,gdp_growth
+CHN,China,2016,8.8,gdp_growth
+CHN,China,2017,6.81,gdp_growth
+CHN,China,2018,6.86,gdp_growth
+CHN,China,2019,10.07,gdp_growth
+CHN,China,2020,-9.79,gdp_growth
+CHN,China,2021,4.05,gdp_growth
+CHN,China,2022,7.68,gdp_growth
+CHN,China,2023,8.53,gdp_growth
+CHN,China,2024,12.94,gdp_growth
+USA,United States,2010,0.2,gdp_growth
+USA,United States,2011,3.97,gdp_growth
+USA,United States,2012,7.79,gdp_growth
+USA,United States,2013,7.39,gdp_growth
+USA,United States,2014,3.45,gdp_growth
+USA,United States,2015,4.56,gdp_growth
+USA,United States,2016,3.41,gdp_growth
+USA,United States,2017,1.67,gdp_growth
+USA,United States,2018,3.17,gdp_growth
+USA,United States,2019,0.94,gdp_growth
+USA,United States,2020,-13.63,gdp_growth
+USA,United States,2021,-1.13,gdp_growth
+USA,United States,2022,2.27,gdp_growth
+USA,United States,2023,1.57,gdp_growth
+USA,United States,2024,3.94,gdp_growth
+GBR,United Kingdom,2010,2.97,gdp_growth
+GBR,United Kingdom,2011,0.67,gdp_growth
+GBR,United Kingdom,2012,4.17,gdp_growth
+GBR,United Kingdom,2013,1.69,gdp_growth
+GBR,United Kingdom,2014,2.98,gdp_growth
+GBR,United Kingdom,2015,1.77,gdp_growth
+GBR,United Kingdom,2016,0.47,gdp_growth
+GBR,United Kingdom,2017,0.62,gdp_growth
+GBR,United Kingdom,2018,3.29,gdp_growth
+GBR,United Kingdom,2019,-0.18,gdp_growth
+GBR,United Kingdom,2020,-15.1,gdp_growth
+GBR,United Kingdom,2021,-0.99,gdp_growth
+GBR,United Kingdom,2022,1.66,gdp_growth
+GBR,United Kingdom,2023,3.69,gdp_growth
+GBR,United Kingdom,2024,3.34,gdp_growth
+JPN,Japan,2010,0.05,gdp_growth
+JPN,Japan,2011,0.58,gdp_growth
+JPN,Japan,2012,3.36,gdp_growth
+JPN,Japan,2013,4.94,gdp_growth
+JPN,Japan,2014,5.34,gdp_growth
+JPN,Japan,2015,3.97,gdp_growth
+JPN,Japan,2016,0.28,gdp_growth
+JPN,Japan,2017,1.4,gdp_growth
+JPN,Japan,2018,1.89,gdp_growth
+JPN,Japan,2019,-1.72,gdp_growth
+JPN,Japan,2020,-17.1,gdp_growth
+JPN,Japan,2021,1.11,gdp_growth
+JPN,Japan,2022,-0.17,gdp_growth
+JPN,Japan,2023,3.0,gdp_growth
+JPN,Japan,2024,1.92,gdp_growth
+DEU,Germany,2010,0.13,gdp_growth
+DEU,Germany,2011,2.15,gdp_growth
+DEU,Germany,2012,4.77,gdp_growth
+DEU,Germany,2013,4.33,gdp_growth
+DEU,Germany,2014,3.06,gdp_growth
+DEU,Germany,2015,-0.57,gdp_growth
+DEU,Germany,2016,1.15,gdp_growth
+DEU,Germany,2017,2.47,gdp_growth
+DEU,Germany,2018,-1.74,gdp_growth
+DEU,Germany,2019,-0.35,gdp_growth
+DEU,Germany,2020,-15.53,gdp_growth
+DEU,Germany,2021,-0.39,gdp_growth
+DEU,Germany,2022,1.14,gdp_growth
+DEU,Germany,2023,2.2,gdp_growth
+DEU,Germany,2024,3.92,gdp_growth
+BRA,Brazil,2010,2.03,gdp_growth
+BRA,Brazil,2011,4.19,gdp_growth
+BRA,Brazil,2012,6.11,gdp_growth
+BRA,Brazil,2013,4.83,gdp_growth
+BRA,Brazil,2014,3.32,gdp_growth
+BRA,Brazil,2015,5.83,gdp_growth
+BRA,Brazil,2016,2.17,gdp_growth
+BRA,Brazil,2017,2.17,gdp_growth
+BRA,Brazil,2018,1.04,gdp_growth
+BRA,Brazil,2019,2.73,gdp_growth
+BRA,Brazil,2020,-16.41,gdp_growth
+BRA,Brazil,2021,2.02,gdp_growth
+BRA,Brazil,2022,2.03,gdp_growth
+BRA,Brazil,2023,2.31,gdp_growth
+BRA,Brazil,2024,0.96,gdp_growth
+RUS,Russia,2010,0.55,gdp_growth
+RUS,Russia,2011,-1.14,gdp_growth
+RUS,Russia,2012,2.4,gdp_growth
+RUS,Russia,2013,3.76,gdp_growth
+RUS,Russia,2014,2.48,gdp_growth
+RUS,Russia,2015,1.57,gdp_growth
+RUS,Russia,2016,2.13,gdp_growth
+RUS,Russia,2017,1.7,gdp_growth
+RUS,Russia,2018,-1.42,gdp_growth
+RUS,Russia,2019,2.03,gdp_growth
+RUS,Russia,2020,-14.63,gdp_growth
+RUS,Russia,2021,2.84,gdp_growth
+RUS,Russia,2022,0.32,gdp_growth
+RUS,Russia,2023,1.79,gdp_growth
+RUS,Russia,2024,3.71,gdp_growth
+ZAF,South Africa,2010,1.72,gdp_growth
+ZAF,South Africa,2011,2.82,gdp_growth
+ZAF,South Africa,2012,5.84,gdp_growth
+ZAF,South Africa,2013,5.54,gdp_growth
+ZAF,South Africa,2014,1.84,gdp_growth
+ZAF,South Africa,2015,5.88,gdp_growth
+ZAF,South Africa,2016,2.22,gdp_growth
+ZAF,South Africa,2017,1.73,gdp_growth
+ZAF,South Africa,2018,-0.98,gdp_growth
+ZAF,South Africa,2019,-1.7,gdp_growth
+ZAF,South Africa,2020,-13.31,gdp_growth
+ZAF,South Africa,2021,-0.05,gdp_growth
+ZAF,South Africa,2022,0.41,gdp_growth
+ZAF,South Africa,2023,3.91,gdp_growth
+ZAF,South Africa,2024,5.4,gdp_growth
+AUS,Australia,2010,2.87,gdp_growth
+AUS,Australia,2011,5.62,gdp_growth
+AUS,Australia,2012,5.46,gdp_growth
+AUS,Australia,2013,4.57,gdp_growth
+AUS,Australia,2014,1.08,gdp_growth
+AUS,Australia,2015,1.61,gdp_growth
+AUS,Australia,2016,2.39,gdp_growth
+AUS,Australia,2017,1.84,gdp_growth
+AUS,Australia,2018,1.32,gdp_growth
+AUS,Australia,2019,1.59,gdp_growth
+AUS,Australia,2020,-14.7,gdp_growth
+AUS,Australia,2021,0.72,gdp_growth
+AUS,Australia,2022,4.76,gdp_growth
+AUS,Australia,2023,1.54,gdp_growth
+AUS,Australia,2024,3.95,gdp_growth

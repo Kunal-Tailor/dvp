@@ -41,10 +41,6 @@ def dashboard():
     """Serve the dashboard page"""
     return send_from_directory('frontend', 'dashboard.html')
 
-@app.route('/analytics')
-def analytics():
-    """Serve the analytics page"""
-    return send_from_directory('frontend', 'analytics.html')
 
 @app.route('/comparison')
 def comparison():
@@ -210,7 +206,7 @@ if __name__ == '__main__':
     print("\n🌐 Dashboard URLs:")
     print("   - Main Page:    http://localhost:5000")
     print("   - Dashboard:    http://localhost:5000/dashboard")
-    print("   - Analytics:    http://localhost:5000/analytics")
+    
     print("   - Comparison:   http://localhost:5000/comparison")
     print("\n📡 API Endpoints:")
     print("   - Health:       http://localhost:5000/api/health")

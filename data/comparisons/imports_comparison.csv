@@ -1,0 +1,151 @@
+country_code,country,year,value,indicator
+IND,India,2010,8.35,imports
+IND,India,2011,4.23,imports
+IND,India,2012,4.51,imports
+IND,India,2013,8.36,imports
+IND,India,2014,7.24,imports
+IND,India,2015,8.08,imports
+IND,India,2016,5.93,imports
+IND,India,2017,2.6,imports
+IND,India,2018,2.62,imports
+IND,India,2019,4.64,imports
+IND,India,2020,2.28,imports
+IND,India,2021,3.45,imports
+IND,India,2022,6.84,imports
+IND,India,2023,3.49,imports
+IND,India,2024,5.71,imports
+CHN,China,2010,3.0,imports
+CHN,China,2011,7.48,imports
+CHN,China,2012,5.27,imports
+CHN,China,2013,9.29,imports
+CHN,China,2014,5.82,imports
+CHN,China,2015,8.14,imports
+CHN,China,2016,5.46,imports
+CHN,China,2017,5.96,imports
+CHN,China,2018,5.22,imports
+CHN,China,2019,4.65,imports
+CHN,China,2020,3.86,imports
+CHN,China,2021,2.11,imports
+CHN,China,2022,4.04,imports
+CHN,China,2023,3.85,imports
+CHN,China,2024,5.58,imports
+USA,United States,2010,5.54,imports
+USA,United States,2011,4.59,imports
+USA,United States,2012,4.35,imports
+USA,United States,2013,10.13,imports
+USA,United States,2014,6.85,imports
+USA,United States,2015,5.84,imports
+USA,United States,2016,5.14,imports
+USA,United States,2017,4.71,imports
+USA,United States,2018,1.71,imports
+USA,United States,2019,0.88,imports
+USA,United States,2020,5.49,imports
+USA,United States,2021,3.87,imports
+USA,United States,2022,2.36,imports
+USA,United States,2023,5.18,imports
+USA,United States,2024,6.67,imports
+GBR,United Kingdom,2010,6.56,imports
+GBR,United Kingdom,2011,2.73,imports
+GBR,United Kingdom,2012,9.05,imports
+GBR,United Kingdom,2013,9.67,imports
+GBR,United Kingdom,2014,8.34,imports
+GBR,United Kingdom,2015,10.14,imports
+GBR,United Kingdom,2016,8.36,imports
+GBR,United Kingdom,2017,3.37,imports
+GBR,United Kingdom,2018,5.08,imports
+GBR,United Kingdom,2019,3.09,imports
+GBR,United Kingdom,2020,5.88,imports
+GBR,United Kingdom,2021,2.9,imports
+GBR,United Kingdom,2022,4.19,imports
+GBR,United Kingdom,2023,6.14,imports
+GBR,United Kingdom,2024,3.63,imports
+JPN,Japan,2010,6.54,imports
+JPN,Japan,2011,8.67,imports
+JPN,Japan,2012,8.37,imports
+JPN,Japan,2013,6.6,imports
+JPN,Japan,2014,10.06,imports
+JPN,Japan,2015,6.85,imports
+JPN,Japan,2016,4.13,imports
+JPN,Japan,2017,5.04,imports
+JPN,Japan,2018,4.92,imports
+JPN,Japan,2019,1.82,imports
+JPN,Japan,2020,2.96,imports
+JPN,Japan,2021,3.8,imports
+JPN,Japan,2022,6.66,imports
+JPN,Japan,2023,4.87,imports
+JPN,Japan,2024,6.53,imports
+DEU,Germany,2010,4.83,imports
+DEU,Germany,2011,4.25,imports
+DEU,Germany,2012,6.82,imports
+DEU,Germany,2013,5.34,imports
+DEU,Germany,2014,8.75,imports
+DEU,Germany,2015,7.84,imports
+DEU,Germany,2016,4.8,imports
+DEU,Germany,2017,5.92,imports
+DEU,Germany,2018,5.44,imports
+DEU,Germany,2019,5.78,imports
+DEU,Germany,2020,0.99,imports
+DEU,Germany,2021,4.62,imports
+DEU,Germany,2022,3.48,imports
+DEU,Germany,2023,4.62,imports
+DEU,Germany,2024,6.33,imports
+BRA,Brazil,2010,3.92,imports
+BRA,Brazil,2011,6.75,imports
+BRA,Brazil,2012,7.33,imports
+BRA,Brazil,2013,9.29,imports
+BRA,Brazil,2014,5.49,imports
+BRA,Brazil,2015,9.05,imports
+BRA,Brazil,2016,6.29,imports
+BRA,Brazil,2017,4.66,imports
+BRA,Brazil,2018,2.66,imports
+BRA,Brazil,2019,3.55,imports
+BRA,Brazil,2020,0.57,imports
+BRA,Brazil,2021,2.34,imports
+BRA,Brazil,2022,4.5,imports
+BRA,Brazil,2023,5.09,imports
+BRA,Brazil,2024,5.47,imports
+RUS,Russia,2010,4.73,imports
+RUS,Russia,2011,4.22,imports
+RUS,Russia,2012,7.13,imports
+RUS,Russia,2013,7.76,imports
+RUS,Russia,2014,7.39,imports
+RUS,Russia,2015,8.26,imports
+RUS,Russia,2016,5.95,imports
+RUS,Russia,2017,3.06,imports
+RUS,Russia,2018,5.56,imports
+RUS,Russia,2019,2.89,imports
+RUS,Russia,2020,1.16,imports
+RUS,Russia,2021,2.05,imports
+RUS,Russia,2022,4.54,imports
+RUS,Russia,2023,6.01,imports
+RUS,Russia,2024,3.41,imports
+ZAF,South Africa,2010,5.4,imports
+ZAF,South Africa,2011,6.31,imports
+ZAF,South Africa,2012,6.1,imports
+ZAF,South Africa,2013,10.37,imports
+ZAF,South Africa,2014,8.41,imports
+ZAF,South Africa,2015,7.6,imports
+ZAF,South Africa,2016,5.44,imports
+ZAF,South Africa,2017,6.48,imports
+ZAF,South Africa,2018,7.62,imports
+ZAF,South Africa,2019,4.39,imports
+ZAF,South Africa,2020,3.08,imports
+ZAF,South Africa,2021,3.41,imports
+ZAF,South Africa,2022,5.57,imports
+ZAF,South Africa,2023,6.27,imports
+ZAF,South Africa,2024,3.28,imports
+AUS,Australia,2010,5.96,imports
+AUS,Australia,2011,6.79,imports
+AUS,Australia,2012,6.24,imports
+AUS,Australia,2013,7.51,imports
+AUS,Australia,2014,6.11,imports
+AUS,Australia,2015,9.22,imports
+AUS,Australia,2016,8.11,imports
+AUS,Australia,2017,5.32,imports
+AUS,Australia,2018,4.15,imports
+AUS,Australia,2019,2.45,imports
+AUS,Australia,2020,1.35,imports
+AUS,Australia,2021,3.08,imports
+AUS,Australia,2022,5.55,imports
+AUS,Australia,2023,4.43,imports
+AUS,Australia,2024,6.22,imports
