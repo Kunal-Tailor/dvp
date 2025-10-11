@@ -29,11 +29,6 @@ def dashboard():
     """Serve the dashboard page"""
     return send_from_directory('frontend', 'dashboard.html')
 
-@app.route('/analytics')
-def analytics():
-    """Serve the analytics page"""
-    return send_from_directory('frontend', 'analytics.html')
-
 @app.route('/api/indicators')
 def get_indicators():
     """Get list of all available indicators"""
