@@ -121,6 +121,63 @@
         .animate-fade-in {
             animation: fadeInUp 0.6s ease-out;
         }
+        
+        .loading-spinner {
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            padding: 16px;
+            border-radius: 12px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .success-message {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 16px;
+            border-radius: 12px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        
+        .loading-content {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            text-align: center;
+        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -236,10 +293,15 @@
             </div>
 
             <!-- Charts Grid -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <div id="charts-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
                 <!-- Trend Comparison Chart -->
                 <div class="card animate-fade-in">
-                    <h3 class="text-xl font-bold mb-4">📊 Trend Comparison (2010-2024)</h3>
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold">📊 Trend Comparison (2010-2024)</h3>
+                        <button onclick="exportChart('trendChart', 'trend-comparison')" class="px-3 py-1 bg-purple-100 text-purple-600 rounded-lg hover:bg-purple-200 transition text-sm">
+                            <i class="fas fa-download mr-1"></i>Export
+                        </button>
+                    </div>
                     <div style="position: relative; height: 300px;">
                         <canvas id="trendChart"></canvas>
                     </div>
@@ -247,7 +309,12 @@
 
                 <!-- Bar Comparison Chart -->
                 <div class="card animate-fade-in">
-                    <h3 class="text-xl font-bold mb-4">📊 Latest Values Comparison</h3>
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold">📊 Latest Values Comparison</h3>
+                        <button onclick="exportChart('barChart', 'bar-comparison')" class="px-3 py-1 bg-purple-100 text-purple-600 rounded-lg hover:bg-purple-200 transition text-sm">
+                            <i class="fas fa-download mr-1"></i>Export
+                        </button>
+                    </div>
                     <div style="position: relative; height: 300px;">
                         <canvas id="barChart"></canvas>
                     </div>
@@ -255,7 +322,12 @@
 
                 <!-- Radar Chart -->
                 <div class="card animate-fade-in">
-                    <h3 class="text-xl font-bold mb-4">🎯 Multi-Indicator Analysis</h3>
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold">🎯 Multi-Indicator Analysis</h3>
+                        <button onclick="exportChart('radarChart', 'radar-comparison')" class="px-3 py-1 bg-purple-100 text-purple-600 rounded-lg hover:bg-purple-200 transition text-sm">
+                            <i class="fas fa-download mr-1"></i>Export
+                        </button>
+                    </div>
                     <div style="position: relative; height: 300px;">
                         <canvas id="radarChart"></canvas>
                     </div>
@@ -263,7 +335,12 @@
 
                 <!-- Rankings -->
                 <div class="card animate-fade-in">
-                    <h3 class="text-xl font-bold mb-4">🏆 Country Rankings</h3>
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold">🏆 Country Rankings</h3>
+                        <button onclick="exportRankings()" class="px-3 py-1 bg-purple-100 text-purple-600 rounded-lg hover:bg-purple-200 transition text-sm">
+                            <i class="fas fa-file-csv mr-1"></i>Export CSV
+                        </button>
+                    </div>
                     <div id="rankings-container" class="space-y-3">
                         <!-- Rankings will be loaded here -->
                     </div>
@@ -298,12 +375,21 @@
         </div>
     </div>
 
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay" style="display: none;">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p class="mt-4 text-lg font-semibold text-gray-700">Loading data...</p>
+        </div>
+    </div>
+
     <script>
         // State
         let selectedCountries = ['IND', 'CHN', 'USA', 'GBR', 'JPN', 'DEU'];
         let selectedIndicator = 'gdp_growth';
         let allCountries = [];
         let charts = {};
+        let currentRankingsData = [];
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
@@ -311,9 +397,34 @@
             setupIndicatorSelection();
         });
 
+        function showLoading() {
+            document.getElementById('loading-overlay').style.display = 'flex';
+        }
+
+        function hideLoading() {
+            document.getElementById('loading-overlay').style.display = 'none';
+        }
+
+        function showError(message) {
+            const chartsGrid = document.getElementById('charts-grid');
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message col-span-2';
+            errorDiv.innerHTML = `
+                <i class="fas fa-exclamation-circle text-2xl"></i>
+                <div>
+                    <div class="font-semibold">Error</div>
+                    <div class="text-sm">${message}</div>
+                </div>
+            `;
+            chartsGrid.insertBefore(errorDiv, chartsGrid.firstChild);
+            setTimeout(() => errorDiv.remove(), 5000);
+        }
+
         async function loadCountries() {
             try {
+                showLoading();
                 const response = await fetch('/api/comparison/countries');
+                if (!response.ok) throw new Error('Failed to load countries');
                 allCountries = await response.json();
                 
                 const container = document.getElementById('country-selector');
@@ -346,10 +457,13 @@
                 });
                 
                 // Load initial data
-                loadComparisonData();
-                loadRadarData();
+                await loadComparisonData();
+                await loadRadarData();
+                hideLoading();
             } catch (error) {
                 console.error('Error loading countries:', error);
+                showError('Failed to load countries data. Please refresh the page.');
+                hideLoading();
             }
         }
 
@@ -366,16 +480,21 @@
 
         async function loadComparisonData() {
             try {
+                showLoading();
                 const countriesParam = selectedCountries.join(',');
                 const response = await fetch(`/api/comparison/${selectedIndicator}?countries=${countriesParam}`);
+                if (!response.ok) throw new Error('Failed to load comparison data');
                 const data = await response.json();
                 
                 updateTrendChart(data);
                 updateBarChart(data);
                 updateRankings(data);
                 updateIndiaSummary(data);
+                hideLoading();
             } catch (error) {
                 console.error('Error loading comparison data:', error);
+                showError('Failed to load comparison data. Please try again.');
+                hideLoading();
             }
         }
 
@@ -383,11 +502,13 @@
             try {
                 const countriesParam = selectedCountries.slice(0, 5).join(','); // Limit to 5 for readability
                 const response = await fetch(`/api/comparison/multi-indicator?countries=${countriesParam}`);
+                if (!response.ok) throw new Error('Failed to load radar data');
                 const data = await response.json();
                 
                 updateRadarChart(data);
             } catch (error) {
                 console.error('Error loading radar data:', error);
+                showError('Failed to load multi-indicator analysis.');
             }
         }
 
@@ -542,9 +663,12 @@
             const container = document.getElementById('rankings-container');
             
             if (!data.rankings || data.rankings.length === 0) {
-                container.innerHTML = '<div class="text-gray-500">No ranking data available</div>';
+                container.innerHTML = '<div class="text-gray-500 text-center py-4"><i class="fas fa-info-circle mr-2"></i>No ranking data available</div>';
+                currentRankingsData = [];
                 return;
             }
+            
+            currentRankingsData = data.rankings; // Store for export
             
             container.innerHTML = data.rankings.map((rank, index) => {
                 const position = index + 1;
@@ -598,6 +722,42 @@
                 };
                 document.getElementById('india-unit').textContent = units[selectedIndicator] || '';
             }
+        }
+
+        // Export functions
+        function exportChart(chartId, filename) {
+            const canvas = document.getElementById(chartId);
+            if (canvas) {
+                const url = canvas.toDataURL('image/png');
+                const link = document.createElement('a');
+                link.download = `${filename}-${selectedIndicator}-${new Date().toISOString().split('T')[0]}.png`;
+                link.href = url;
+                link.click();
+            }
+        }
+
+        function exportRankings() {
+            if (!currentRankingsData || currentRankingsData.length === 0) {
+                alert('No ranking data available to export');
+                return;
+            }
+
+            const csv = [
+                ['Rank', 'Country Code', 'Country Name', 'Value'],
+                ...currentRankingsData.map((rank, index) => [
+                    index + 1,
+                    rank.country_code,
+                    rank.country,
+                    rank.value.toFixed(2)
+                ])
+            ].map(row => row.join(',')).join('\\n');
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.download = `rankings-${selectedIndicator}-${new Date().toISOString().split('T')[0]}.csv`;
+            link.href = url;
+            link.click();
         }
     </script>
 </body>
