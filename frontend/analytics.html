@@ -349,11 +349,11 @@
                 ];
                 
                 const chartDatasets = datasets.map((ds, i) => {
-                    const values = ds.data.map(d => d.value || d.inflation || d.exports || 0);
+                    const values = ds.data.map(d => d.value || d.inflation || d.exports || d.volume || d.cpi || 0);
                     // Normalize (z-score)
                     const mean = values.reduce((a, b) => a + b, 0) / values.length;
-                    const std = Math.sqrt(values.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b) / values.length);
-                    const normalized = values.map(v => (v - mean) / std);
+                    const std = Math.sqrt(values.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b) / values.length) || 1;
+                    const normalized = values.map(v => std > 0 ? (v - mean) / std : 0);
                     
                     return {
                         label: ds.id.toUpperCase(),
@@ -369,7 +369,12 @@
                 comparisonChart = new Chart(ctx, {
                     type: 'line',
                     data: {
-                        labels: datasets[0].data.map(d => d.date),
+                        labels: datasets[0].data.map(d => {
+                            if (typeof d.date === 'string') return d.date;
+                            if (d.year && d.quarter) return `${d.year} ${d.quarter}`;
+                            if (d.year) return d.year.toString();
+                            return 'Unknown';
+                        }),
                         datasets: chartDatasets
                     },
                     options: {

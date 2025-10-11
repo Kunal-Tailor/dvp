@@ -326,8 +326,13 @@
                 
                 if (dateRange !== 'all') {
                     const now = new Date();
-                    const years = parseInt(dateRange);
-                    startDate = new Date(now.setFullYear(now.getFullYear() - years)).toISOString().split('T')[0];
+                    let years = 1;
+                    if (dateRange === '5y') years = 5;
+                    else if (dateRange === '3y') years = 3;
+                    else if (dateRange === '1y') years = 1;
+                    const targetDate = new Date(now);
+                    targetDate.setFullYear(targetDate.getFullYear() - years);
+                    startDate = targetDate.toISOString().split('T')[0];
                 }
                 
                 let url = `/api/data/${currentIndicator}`;
@@ -341,6 +346,7 @@
                 updateTable();
             } catch (error) {
                 console.error('Error loading data:', error);
+                alert('Error loading data: ' + error.message);
             }
         }
         
@@ -373,7 +379,13 @@
                 chartInstance.destroy();
             }
             
-            const labels = currentData.map(d => d.date);
+            const labels = currentData.map(d => {
+                // Handle both date string and date object
+                if (typeof d.date === 'string') return d.date;
+                if (d.year && d.quarter) return `${d.year} ${d.quarter}`;
+                if (d.year) return d.year.toString();
+                return 'Unknown';
+            });
             const values = currentData.map(d => d.value || d.inflation || d.exports || d.volume || 0);
             
             const config = {
