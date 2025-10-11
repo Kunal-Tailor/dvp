@@ -42,6 +42,30 @@
             transform: scale(1.1);
             z-index: 10;
         }
+        
+        .loading-spinner {
+            border: 3px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 3px solid #667eea;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -72,12 +96,24 @@
     <main class="pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <!-- Header -->
         <div class="mb-12">
-            <h1 class="text-4xl font-black text-gray-900 mb-4">
-                Advanced <span class="gradient-bg bg-clip-text text-transparent">Analytics</span>
-            </h1>
-            <p class="text-xl text-gray-600">
-                Deep dive into economic correlations, trends, and multi-indicator comparisons
-            </p>
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                <div>
+                    <h1 class="text-4xl font-black text-gray-900 mb-4">
+                        Advanced <span class="gradient-bg bg-clip-text text-transparent">Analytics</span>
+                    </h1>
+                    <p class="text-xl text-gray-600">
+                        Deep dive into economic correlations, trends, and multi-indicator comparisons
+                    </p>
+                </div>
+                <div class="flex space-x-3 mt-4 md:mt-0">
+                    <button onclick="exportAnalyticsData()" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
+                        <i class="fas fa-download mr-2"></i>Export Data
+                    </button>
+                    <button onclick="refreshAllCharts()" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">
+                        <i class="fas fa-sync-alt mr-2"></i>Refresh All
+                    </button>
+                </div>
+            </div>
         </div>
 
         <!-- Overview Cards -->
@@ -87,17 +123,17 @@
                     <h3 class="font-bold text-gray-900">Total Indicators</h3>
                     <i class="fas fa-database text-purple-500 text-2xl"></i>
                 </div>
-                <div class="text-4xl font-black text-purple-600">11</div>
+                <div id="total-indicators" class="text-4xl font-black text-purple-600">--</div>
                 <p class="text-gray-600 text-sm mt-2">Economic metrics tracked</p>
             </div>
             
             <div class="chart-container">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="font-bold text-gray-900">Data Points</h3>
+                    <h3 class="font-bold text-gray-900">Avg Growth Rate</h3>
                     <i class="fas fa-chart-bar text-blue-500 text-2xl"></i>
                 </div>
-                <div class="text-4xl font-black text-blue-600">233</div>
-                <p class="text-gray-600 text-sm mt-2">Historical records</p>
+                <div id="avg-growth" class="text-4xl font-black text-blue-600">--</div>
+                <p class="text-gray-600 text-sm mt-2">Average across all indicators</p>
             </div>
             
             <div class="chart-container">
@@ -105,8 +141,8 @@
                     <h3 class="font-bold text-gray-900">Time Span</h3>
                     <i class="fas fa-calendar text-green-500 text-2xl"></i>
                 </div>
-                <div class="text-4xl font-black text-green-600">15+</div>
-                <p class="text-gray-600 text-sm mt-2">Years of data (2010-2025)</p>
+                <div id="time-span" class="text-4xl font-black text-green-600">--</div>
+                <p class="text-gray-600 text-sm mt-2">Years of data available</p>
             </div>
         </div>
 
@@ -123,7 +159,8 @@
                 </p>
             </div>
             <div id="correlation-matrix" class="overflow-x-auto">
-                <!-- Correlation matrix will be rendered here -->
+                <div class="loading-spinner"></div>
+                <p class="text-center text-gray-500 mt-2">Loading correlation matrix...</p>
             </div>
         </div>
 
@@ -188,40 +225,20 @@
 
         <!-- Key Insights -->
         <div class="chart-container">
-            <h3 class="text-xl font-bold text-gray-900 mb-4">
-                <i class="fas fa-lightbulb text-yellow-500 mr-2"></i>
-                Key Insights
-            </h3>
-            <div class="grid md:grid-cols-2 gap-4">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-bold text-gray-900">
+                    <i class="fas fa-lightbulb text-yellow-500 mr-2"></i>
+                    Key Insights
+                </h3>
+                <button onclick="loadDynamicInsights()" class="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition">
+                    <i class="fas fa-sync-alt mr-2"></i>Refresh Insights
+                </button>
+            </div>
+            <div id="insights-container" class="grid md:grid-cols-2 gap-4">
                 <div class="p-4 bg-blue-50 rounded-lg">
-                    <h4 class="font-bold text-blue-900 mb-2">📈 Strong Positive Correlation</h4>
+                    <h4 class="font-bold text-blue-900 mb-2">📈 Loading Insights...</h4>
                     <p class="text-blue-800 text-sm">
-                        GDP Growth and IIP (Industrial Production) show strong positive correlation (0.89), 
-                        indicating industrial activity closely tracks economic growth.
-                    </p>
-                </div>
-                
-                <div class="p-4 bg-red-50 rounded-lg">
-                    <h4 class="font-bold text-red-900 mb-2">📉 Strong Negative Correlation</h4>
-                    <p class="text-red-800 text-sm">
-                        GDP Growth and Unemployment Rate show strong negative correlation (-0.91), 
-                        as expected - higher growth typically means lower unemployment.
-                    </p>
-                </div>
-                
-                <div class="p-4 bg-green-50 rounded-lg">
-                    <h4 class="font-bold text-green-900 mb-2">💹 Digital Growth</h4>
-                    <p class="text-green-800 text-sm">
-                        Digital Payment Volume has grown exponentially from 0.1M (2016) to 11,000M (2024), 
-                        showing rapid digital transformation.
-                    </p>
-                </div>
-                
-                <div class="p-4 bg-purple-50 rounded-lg">
-                    <h4 class="font-bold text-purple-900 mb-2">🏦 Forex Stability</h4>
-                    <p class="text-purple-800 text-sm">
-                        Forex Reserves have grown steadily from $271B (2010) to $604B (2024), 
-                        indicating improved economic resilience.
+                        Analyzing economic indicators...
                     </p>
                 </div>
             </div>
@@ -235,10 +252,12 @@
         let selectedIndicators = ['gdp'];
         
         document.addEventListener('DOMContentLoaded', () => {
+            loadOverviewStats();
             loadCorrelationMatrix();
             loadComparisonChart();
             loadGrowthChart();
             loadCategoryChart();
+            loadDynamicInsights();
             
             // Indicator selection
             document.querySelectorAll('.compare-indicator-btn').forEach(btn => {
@@ -264,6 +283,45 @@
             });
         });
         
+        async function loadOverviewStats() {
+            try {
+                // Show loading state
+                document.getElementById('total-indicators').textContent = '...';
+                document.getElementById('avg-growth').textContent = '...';
+                document.getElementById('time-span').textContent = '...';
+                
+                const response = await fetch('/api/indicators');
+                const indicators = await response.json();
+                
+                // Total indicators
+                document.getElementById('total-indicators').textContent = indicators.length;
+                
+                // Get summary to calculate average growth
+                const summaryResponse = await fetch('/api/summary');
+                const summary = await summaryResponse.json();
+                
+                if (summary && summary.length > 0) {
+                    const avgGrowth = summary.reduce((acc, item) => acc + (item.growth_rate || 0), 0) / summary.length;
+                    document.getElementById('avg-growth').textContent = avgGrowth.toFixed(1) + '%';
+                }
+                
+                // Time span - calculate from GDP data (as it has full history)
+                const gdpResponse = await fetch('/api/data/gdp');
+                const gdpData = await gdpResponse.json();
+                if (gdpData && gdpData.length > 0) {
+                    const firstYear = new Date(gdpData[0].date).getFullYear();
+                    const lastYear = new Date(gdpData[gdpData.length - 1].date).getFullYear();
+                    const span = lastYear - firstYear;
+                    document.getElementById('time-span').textContent = span + '+';
+                }
+            } catch (error) {
+                console.error('Error loading overview stats:', error);
+                document.getElementById('total-indicators').textContent = 'N/A';
+                document.getElementById('avg-growth').textContent = 'N/A';
+                document.getElementById('time-span').textContent = 'N/A';
+            }
+        }
+        
         async function loadCorrelationMatrix() {
             try {
                 const response = await fetch('/api/correlation');
@@ -271,38 +329,45 @@
                 
                 const container = document.getElementById('correlation-matrix');
                 
+                if (!data.indicators || !data.matrix) {
+                    container.innerHTML = '<p class="text-red-500">Error loading correlation data</p>';
+                    return;
+                }
+                
                 // Create table
-                let html = '<table class="w-full border-collapse">';
+                let html = '<div class="overflow-x-auto"><table class="w-full border-collapse min-w-max">';
                 
                 // Header row
-                html += '<tr><th class="p-2 border"></th>';
+                html += '<tr><th class="p-2 border bg-gray-50"></th>';
                 data.indicators.forEach(ind => {
-                    html += `<th class="p-2 border text-xs font-bold">${ind.split('_')[0]}</th>`;
+                    const shortName = ind.replace(/_/g, ' ').substring(0, 12);
+                    html += `<th class="p-2 border text-xs font-bold bg-gray-50" title="${ind}">${shortName}</th>`;
                 });
                 html += '</tr>';
                 
                 // Data rows
                 data.matrix.forEach((row, i) => {
-                    html += `<tr><th class="p-2 border text-xs font-bold">${data.indicators[i].split('_')[0]}</th>`;
+                    const rowName = data.indicators[i].replace(/_/g, ' ').substring(0, 12);
+                    html += `<tr><th class="p-2 border text-xs font-bold bg-gray-50" title="${data.indicators[i]}">${rowName}</th>`;
                     row.forEach(val => {
                         const absVal = Math.abs(val);
                         let color = 'bg-gray-100';
                         if (absVal > 0.7) color = val > 0 ? 'bg-green-200' : 'bg-red-200';
                         else if (absVal > 0.4) color = val > 0 ? 'bg-green-100' : 'bg-red-100';
                         
-                        html += `<td class="p-2 border text-center correlation-cell ${color}">
+                        html += `<td class="p-2 border text-center correlation-cell ${color} text-xs">
                             ${isNaN(val) ? '-' : val.toFixed(2)}
                         </td>`;
                     });
                     html += '</tr>';
                 });
                 
-                html += '</table>';
+                html += '</table></div>';
                 container.innerHTML = html;
                 
                 // Add legend
                 const legend = `
-                    <div class="mt-4 flex items-center justify-center space-x-4 text-sm">
+                    <div class="mt-4 flex flex-wrap items-center justify-center gap-4 text-sm">
                         <div class="flex items-center">
                             <div class="w-6 h-6 bg-green-200 rounded mr-2"></div>
                             <span>Strong Positive (>0.7)</span>
@@ -321,6 +386,8 @@
                 
             } catch (error) {
                 console.error('Error loading correlation matrix:', error);
+                document.getElementById('correlation-matrix').innerHTML = 
+                    '<p class="text-red-500">Error loading correlation data. Please ensure the API server is running.</p>';
             }
         }
         
@@ -348,6 +415,14 @@
                     'rgba(155, 89, 182, 1)'
                 ];
                 
+                const indicatorNames = {
+                    'gdp': 'GDP Growth',
+                    'unemployment': 'Unemployment',
+                    'cpi': 'Inflation (CPI)',
+                    'forex': 'Forex Reserves',
+                    'iip': 'IIP Growth'
+                };
+                
                 const chartDatasets = datasets.map((ds, i) => {
                     const values = ds.data.map(d => d.value || d.inflation || d.exports || d.volume || d.cpi || 0);
                     // Normalize (z-score)
@@ -356,7 +431,7 @@
                     const normalized = values.map(v => std > 0 ? (v - mean) / std : 0);
                     
                     return {
-                        label: ds.id.toUpperCase(),
+                        label: indicatorNames[ds.id] || ds.id.toUpperCase(),
                         data: normalized,
                         borderColor: colors[i],
                         backgroundColor: colors[i].replace('1)', '0.1)'),
@@ -366,15 +441,23 @@
                     };
                 });
                 
+                // Get labels from the dataset with most data points
+                const longestDataset = datasets.reduce((a, b) => a.data.length > b.data.length ? a : b);
+                const labels = longestDataset.data.map(d => {
+                    if (typeof d.date === 'string') {
+                        // Format date string
+                        const date = new Date(d.date);
+                        return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+                    }
+                    if (d.year && d.quarter) return `${d.year} ${d.quarter}`;
+                    if (d.year) return d.year.toString();
+                    return 'Unknown';
+                });
+                
                 comparisonChart = new Chart(ctx, {
                     type: 'line',
                     data: {
-                        labels: datasets[0].data.map(d => {
-                            if (typeof d.date === 'string') return d.date;
-                            if (d.year && d.quarter) return `${d.year} ${d.quarter}`;
-                            if (d.year) return d.year.toString();
-                            return 'Unknown';
-                        }),
+                        labels: labels,
                         datasets: chartDatasets
                     },
                     options: {
@@ -382,18 +465,40 @@
                         maintainAspectRatio: false,
                         plugins: {
                             legend: {
-                                position: 'top'
+                                position: 'top',
+                                labels: {
+                                    usePointStyle: true,
+                                    padding: 15
+                                }
                             },
                             tooltip: {
                                 mode: 'index',
-                                intersect: false
+                                intersect: false,
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                padding: 12
                             }
                         },
                         scales: {
                             y: {
                                 title: {
                                     display: true,
-                                    text: 'Normalized Value (σ)'
+                                    text: 'Normalized Value (σ)',
+                                    font: {
+                                        size: 12,
+                                        weight: 'bold'
+                                    }
+                                },
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false
+                                },
+                                ticks: {
+                                    maxRotation: 45,
+                                    minRotation: 45
                                 }
                             }
                         }
@@ -401,6 +506,7 @@
                 });
             } catch (error) {
                 console.error('Error loading comparison chart:', error);
+                alert('Error loading comparison chart. Please ensure the API server is running.');
             }
         }
         
@@ -409,23 +515,28 @@
                 const response = await fetch('/api/summary');
                 const data = await response.json();
                 
+                if (!data || data.length === 0) {
+                    console.error('No summary data available');
+                    return;
+                }
+                
                 const ctx = document.getElementById('growthChart').getContext('2d');
                 
-                const growing = data.filter(d => d.growth_rate > 0);
-                const declining = data.filter(d => d.growth_rate <= 0);
+                // Sort by growth rate
+                const sortedData = data.sort((a, b) => (b.growth_rate || 0) - (a.growth_rate || 0));
                 
                 growthChart = new Chart(ctx, {
                     type: 'bar',
                     data: {
-                        labels: data.map(d => d.name),
+                        labels: sortedData.map(d => d.name || d.id),
                         datasets: [{
                             label: 'Growth Rate (%)',
-                            data: data.map(d => d.growth_rate),
-                            backgroundColor: data.map(d => 
-                                d.growth_rate > 0 ? 'rgba(46, 204, 113, 0.7)' : 'rgba(231, 76, 60, 0.7)'
+                            data: sortedData.map(d => d.growth_rate || 0),
+                            backgroundColor: sortedData.map(d => 
+                                (d.growth_rate || 0) > 0 ? 'rgba(46, 204, 113, 0.7)' : 'rgba(231, 76, 60, 0.7)'
                             ),
-                            borderColor: data.map(d => 
-                                d.growth_rate > 0 ? 'rgba(46, 204, 113, 1)' : 'rgba(231, 76, 60, 1)'
+                            borderColor: sortedData.map(d => 
+                                (d.growth_rate || 0) > 0 ? 'rgba(46, 204, 113, 1)' : 'rgba(231, 76, 60, 1)'
                             ),
                             borderWidth: 2
                         }]
@@ -433,17 +544,39 @@
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
+                        indexAxis: 'y',
                         plugins: {
                             legend: {
                                 display: false
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                padding: 12,
+                                callbacks: {
+                                    label: function(context) {
+                                        return 'Growth: ' + context.parsed.x.toFixed(2) + '%';
+                                    }
+                                }
                             }
                         },
                         scales: {
-                            y: {
+                            x: {
                                 beginAtZero: true,
                                 title: {
                                     display: true,
-                                    text: 'Growth Rate (%)'
+                                    text: 'Growth Rate (%)',
+                                    font: {
+                                        size: 12,
+                                        weight: 'bold'
+                                    }
+                                },
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                }
+                            },
+                            y: {
+                                grid: {
+                                    display: false
                                 }
                             }
                         }
@@ -455,46 +588,237 @@
         }
         
         async function loadCategoryChart() {
-            const categories = {
-                'Growth': 2,
-                'Inflation': 1,
-                'Employment': 1,
-                'Trade': 1,
-                'Finance': 2,
-                'Digital': 1,
-                'Other': 3
-            };
-            
-            const ctx = document.getElementById('categoryChart').getContext('2d');
-            
-            categoryChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: Object.keys(categories),
-                    datasets: [{
-                        data: Object.values(categories),
-                        backgroundColor: [
-                            'rgba(102, 126, 234, 0.8)',
-                            'rgba(231, 76, 60, 0.8)',
-                            'rgba(46, 204, 113, 0.8)',
-                            'rgba(241, 196, 15, 0.8)',
-                            'rgba(155, 89, 182, 0.8)',
-                            'rgba(52, 152, 219, 0.8)',
-                            'rgba(149, 165, 166, 0.8)'
-                        ],
-                        borderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
+            try {
+                const response = await fetch('/api/indicators');
+                const indicators = await response.json();
+                
+                // Count indicators by category
+                const categories = {};
+                indicators.forEach(ind => {
+                    const cat = ind.category || 'Other';
+                    categories[cat] = (categories[cat] || 0) + 1;
+                });
+                
+                const ctx = document.getElementById('categoryChart').getContext('2d');
+                
+                categoryChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: Object.keys(categories),
+                        datasets: [{
+                            data: Object.values(categories),
+                            backgroundColor: [
+                                'rgba(102, 126, 234, 0.8)',
+                                'rgba(231, 76, 60, 0.8)',
+                                'rgba(46, 204, 113, 0.8)',
+                                'rgba(241, 196, 15, 0.8)',
+                                'rgba(155, 89, 182, 0.8)',
+                                'rgba(52, 152, 219, 0.8)',
+                                'rgba(149, 165, 166, 0.8)',
+                                'rgba(255, 99, 132, 0.8)',
+                                'rgba(54, 162, 235, 0.8)',
+                                'rgba(255, 206, 86, 0.8)',
+                                'rgba(75, 192, 192, 0.8)'
+                            ],
+                            borderColor: '#fff',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    padding: 15,
+                                    font: {
+                                        size: 12
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                padding: 12,
+                                callbacks: {
+                                    label: function(context) {
+                                        const label = context.label || '';
+                                        const value = context.parsed || 0;
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const percentage = ((value / total) * 100).toFixed(1);
+                                        return label + ': ' + value + ' indicators (' + percentage + '%)';
+                                    }
+                                }
+                            }
                         }
                     }
+                });
+            } catch (error) {
+                console.error('Error loading category chart:', error);
+            }
+        }
+        
+        async function loadDynamicInsights() {
+            try {
+                const summaryResponse = await fetch('/api/summary');
+                const summary = await summaryResponse.json();
+                
+                // Get correlation data
+                const corrResponse = await fetch('/api/correlation');
+                const corrData = await corrResponse.json();
+                
+                const container = document.getElementById('insights-container');
+                let html = '';
+                
+                // Find fastest growing indicator
+                const fastestGrowing = summary.reduce((max, item) => 
+                    (item.growth_rate || 0) > (max.growth_rate || 0) ? item : max, summary[0]);
+                
+                // Find slowest/declining indicator
+                const slowestGrowing = summary.reduce((min, item) => 
+                    (item.growth_rate || 0) < (min.growth_rate || 0) ? item : min, summary[0]);
+                
+                // Insight 1: Fastest Growing
+                html += `
+                    <div class="p-4 bg-green-50 rounded-lg">
+                        <h4 class="font-bold text-green-900 mb-2">📈 Fastest Growing Indicator</h4>
+                        <p class="text-green-800 text-sm">
+                            ${fastestGrowing.name} shows the highest growth rate at ${fastestGrowing.growth_rate?.toFixed(2)}%, 
+                            with latest value of ${fastestGrowing.latest?.toFixed(2)}.
+                        </p>
+                    </div>
+                `;
+                
+                // Insight 2: Declining Indicator
+                if (slowestGrowing.growth_rate < 0) {
+                    html += `
+                        <div class="p-4 bg-red-50 rounded-lg">
+                            <h4 class="font-bold text-red-900 mb-2">📉 Declining Indicator</h4>
+                            <p class="text-red-800 text-sm">
+                                ${slowestGrowing.name} shows a decline of ${slowestGrowing.growth_rate?.toFixed(2)}%, 
+                                indicating areas that may need policy attention.
+                            </p>
+                        </div>
+                    `;
+                } else {
+                    html += `
+                        <div class="p-4 bg-yellow-50 rounded-lg">
+                            <h4 class="font-bold text-yellow-900 mb-2">⚠️ Slowest Growing Indicator</h4>
+                            <p class="text-yellow-800 text-sm">
+                                ${slowestGrowing.name} has the slowest growth at ${slowestGrowing.growth_rate?.toFixed(2)}%, 
+                                growing from ${slowestGrowing.change?.toFixed(2)} units.
+                            </p>
+                        </div>
+                    `;
                 }
-            });
+                
+                // Insight 3: Correlation insight
+                if (corrData.indicators && corrData.matrix) {
+                    let maxCorr = 0;
+                    let maxPair = ['', ''];
+                    for (let i = 0; i < corrData.matrix.length; i++) {
+                        for (let j = i + 1; j < corrData.matrix[i].length; j++) {
+                            const corr = Math.abs(corrData.matrix[i][j]);
+                            if (corr > maxCorr && corr < 1) {
+                                maxCorr = corr;
+                                maxPair = [corrData.indicators[i], corrData.indicators[j]];
+                            }
+                        }
+                    }
+                    
+                    const corrSign = corrData.matrix[corrData.indicators.indexOf(maxPair[0])][corrData.indicators.indexOf(maxPair[1])] > 0 ? 'positive' : 'negative';
+                    html += `
+                        <div class="p-4 bg-blue-50 rounded-lg">
+                            <h4 class="font-bold text-blue-900 mb-2">🔗 Strong Correlation</h4>
+                            <p class="text-blue-800 text-sm">
+                                ${maxPair[0]} and ${maxPair[1]} show strong ${corrSign} correlation (${maxCorr.toFixed(2)}), 
+                                indicating these indicators move together.
+                            </p>
+                        </div>
+                    `;
+                }
+                
+                // Insight 4: Overall Economic Health
+                const avgGrowth = summary.reduce((sum, item) => sum + (item.growth_rate || 0), 0) / summary.length;
+                const positiveIndicators = summary.filter(item => (item.growth_rate || 0) > 0).length;
+                html += `
+                    <div class="p-4 bg-purple-50 rounded-lg">
+                        <h4 class="font-bold text-purple-900 mb-2">💡 Economic Health Score</h4>
+                        <p class="text-purple-800 text-sm">
+                            Average growth rate across all indicators is ${avgGrowth.toFixed(2)}%. 
+                            ${positiveIndicators} out of ${summary.length} indicators show positive growth.
+                        </p>
+                    </div>
+                `;
+                
+                container.innerHTML = html;
+            } catch (error) {
+                console.error('Error loading dynamic insights:', error);
+                document.getElementById('insights-container').innerHTML = `
+                    <div class="p-4 bg-red-50 rounded-lg col-span-2">
+                        <h4 class="font-bold text-red-900 mb-2">⚠️ Error Loading Insights</h4>
+                        <p class="text-red-800 text-sm">
+                            Unable to load dynamic insights. Please ensure the API server is running.
+                        </p>
+                    </div>
+                `;
+            }
+        }
+        
+        // Add export functionality for analytics data
+        async function exportAnalyticsData() {
+            try {
+                // Get all data
+                const summary = await fetch('/api/summary').then(r => r.json());
+                const correlation = await fetch('/api/correlation').then(r => r.json());
+                
+                // Create CSV content
+                let csv = 'Analytics Export - India Economic Dashboard\\n\\n';
+                
+                // Summary section
+                csv += 'Indicator Summary\\n';
+                csv += 'Name,Latest Value,Change,Growth Rate (%)\\n';
+                summary.forEach(item => {
+                    csv += `${item.name},${item.latest},${item.change},${item.growth_rate}\\n`;
+                });
+                
+                csv += '\\n\\nCorrelation Matrix\\n';
+                csv += ',' + correlation.indicators.join(',') + '\\n';
+                correlation.matrix.forEach((row, i) => {
+                    csv += correlation.indicators[i] + ',' + row.join(',') + '\\n';
+                });
+                
+                // Download
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.download = `analytics-export-${new Date().toISOString().split('T')[0]}.csv`;
+                link.href = url;
+                link.click();
+                
+                alert('Analytics data exported successfully!');
+            } catch (error) {
+                console.error('Error exporting data:', error);
+                alert('Error exporting data. Please try again.');
+            }
+        }
+        
+        // Add refresh all functionality
+        async function refreshAllCharts() {
+            try {
+                await Promise.all([
+                    loadOverviewStats(),
+                    loadCorrelationMatrix(),
+                    loadComparisonChart(),
+                    loadGrowthChart(),
+                    loadCategoryChart(),
+                    loadDynamicInsights()
+                ]);
+                alert('All charts refreshed successfully!');
+            } catch (error) {
+                console.error('Error refreshing charts:', error);
+                alert('Error refreshing charts. Please try again.');
+            }
         }
     </script>
 </body>
